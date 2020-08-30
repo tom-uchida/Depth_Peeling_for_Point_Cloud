@@ -1,0 +1,12 @@
+.vscode/
+
+CONVERT2BINARY/
+PLY_DATA/
+PLY_SUPPORT/
+SPBR_DATA/
+
+*.sh
+*.o
+*.kvs
+Makefile
+*.txt
