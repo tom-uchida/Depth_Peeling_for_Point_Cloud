@@ -1,4 +1,4 @@
-#include "DepthPeelingRenderer.h"
+#include "depth_peeling_renderer.h"
 #include <kvs/OpenGL>
 #include <kvs/ShaderSource>
 #include <kvs/VertexShader>
@@ -113,7 +113,7 @@ DepthPeelingRenderer::DepthPeelingRenderer():
     m_has_normal( false ),
     m_has_connection( false ),
     m_shader( NULL ),
-    m_npeels( 2 )
+    m_layer_level( 1 )
 {
     // PolygonRendererGLSL.h
     this->setShader( kvs::Shader::Lambert() );
@@ -174,9 +174,8 @@ void DepthPeelingRenderer::exec( kvs::ObjectBase* object, kvs::Camera* camera, k
     }
 
     // Peeling Processing
-    std::cout << "m_npeels: " << m_npeels << "\n";
     this->initialize_pass();
-    for ( size_t i = 0; i < m_npeels; i++ )
+    for ( size_t i = 0; i < m_layer_level; i++ )
     {
         this->peel_pass( polygon );
     }

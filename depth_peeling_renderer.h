@@ -8,6 +8,7 @@
 #include <kvs/PolygonObject>
 #include <kvs/PolygonRenderer>
 
+#include <kvs/ParticleBasedRenderer>
 
 namespace kvs
 {
@@ -19,12 +20,13 @@ class Light;
 namespace local
 {
 
-class DepthPeelingRenderer : public kvs::PolygonRenderer
+// class DepthPeelingRenderer : public kvs::PolygonRenderer
 // class PolygonRenderer : public kvs::RendererBase
+class DepthPeelingRenderer : public kvs::glsl::ParticleBasedRenderer
 {
-    // 
     kvsModule( local::DepthPeelingRenderer, Renderer );
-    kvsModuleBaseClass( kvs::PolygonRenderer );
+    // kvsModuleBaseClass( kvs::PolygonRenderer );
+    kvsModuleBaseClass( kvs::glsl::ParticleBasedRenderer );
 
 private:
     size_t m_width; ///< window width
@@ -38,7 +40,7 @@ private:
     kvs::IndexBufferObject m_ibo; ///< index buffer object
 
     int m_cycle;
-    size_t m_npeels;
+    size_t m_layer_level;
     kvs::RGBColor m_background_color;
 
     kvs::ProgramObject m_peeling_shader; ///< shader program for depth peeling
@@ -58,7 +60,7 @@ public:
     template <typename ShadingType>
     void setShader( const ShadingType shader );
 
-    void setNumberOfPeels( const size_t npeels ) { m_npeels = npeels; }
+    void setLayerLevel( const size_t nlayers ) { m_layer_level = nlayers; }
     void setBackgroundColor( const kvs::RGBColor& color ) { m_background_color = color; }
 
 private:

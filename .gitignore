@@ -10,3 +10,4 @@ SPBR_DATA/
 *.kvs
 Makefile
 *.txt
+*.spbr
