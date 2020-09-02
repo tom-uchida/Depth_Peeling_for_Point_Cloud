@@ -41,6 +41,10 @@ const char POINT_SIZE_COMMAND       [] = "#/PointSize" ;
 // #/RepeatLevel (uInt size) (default: 1)
 const char REPEAT_LEVEL_COMMAND     [] = "#/RepeatLevel" ;
 
+// UCHIDA_200902
+// #/LayerLevel (uInt size) (default: 1)
+const char LAYER_LEVEL_COMMAND     [] = "#/LayerLevel" ;
+
 // #/ImageResolution (uInt size)
 const char IMAGE_RESOLUTION_COMMAND [] = "#/ImageResolution" ;
 

@@ -4,7 +4,19 @@
 
 #include "spbr.h"
 
-const double MOUSE_MIN_SPEED = 0.01 ;
+const double MOUSE_MIN_SPEED = 0.01;
+
+// UCHIDA_200902
+void 
+SPBR::setLayerLevel( unsigned int level ) 
+{ 
+    m_layerLevel = level; 
+    if ( m_layerLevel < 1 ) {  m_layerLevel = 1 ; }
+
+    std::cout << "** Layer level is set to \"" ;
+    std::cout << m_layerLevel << "\"." <<  std::endl;
+}
+
 
 //-----
 void 

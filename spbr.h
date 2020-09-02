@@ -66,10 +66,13 @@ class SPBR  : public kvs::PointObject {
        // axis_name: X, +X, x, +x, Y, +Y, y, +y, Z, +Z, z, +z 
   bool setCameraAngleByAxis ( char* axis_name, double* zrot_angle_deg, double* xrot_angle_deg ) ;
 
-
   // Repeat-level control
   void          setRepeatLevel   ( unsigned int level );
   unsigned int  repeatLevel  ( void ) { return m_repeatLevel  ; }
+
+    // UCHIDA_200902
+    void          setLayerLevel   ( unsigned int level );
+    unsigned int  layerLevel  ( void ) { return m_layerLevel  ; }
 
   // Wireframe-box control
   void setWireframeBox   ( double xmin, double ymin, double zmin, 
@@ -229,6 +232,8 @@ class SPBR  : public kvs::PointObject {
 
   // Repeat-level control
   unsigned int  m_repeatLevel    ;
+
+    unsigned int  m_layerLevel    ; // UCHIDA_200902
 
   // Particle-attribute control
   unsigned int  m_Rb, m_Gb, m_Bb ;
