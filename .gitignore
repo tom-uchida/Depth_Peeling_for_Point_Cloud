@@ -11,3 +11,6 @@ SPBR_DATA/
 Makefile
 *.txt
 *.spbr
+
+spbr_dp
+opbr_dp

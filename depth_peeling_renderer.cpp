@@ -12,24 +12,21 @@ namespace
 /*===========================================================================*/
 /**
  *  @brief  Returns vertex-color array.
- *  @param  polygon [in] pointer to the polygon object
+ *  @param  point [in] pointer to the point object
  */
 /*===========================================================================*/
-kvs::ValueArray<kvs::UInt8> VertexColors( const kvs::PolygonObject* polygon )
+kvs::ValueArray<kvs::UInt8> VertexColors( const kvs::PointObject* point_object )
 {
-    const size_t nvertices = polygon->numberOfVertices();
-    const bool is_single_color = polygon->colors().size() == 3;
-    const bool is_single_alpha = polygon->opacities().size() == 1;
-    const kvs::UInt8* pcolors = polygon->colors().data();
-    const kvs::UInt8* palphas = polygon->opacities().data();
+    const size_t nvertices = point_object->numberOfVertices();
+    const bool is_single_color = point_object->colors().size() == 3;
+    const kvs::UInt8* pcolors = point_object->colors().data();
 
-    kvs::ValueArray<kvs::UInt8> colors( nvertices * 4 );
+    kvs::ValueArray<kvs::UInt8> colors( nvertices * 3 );
     for ( size_t i = 0; i < nvertices; i++ )
     {
-        colors[ 4 * i + 0 ] = is_single_color ? pcolors[0] : pcolors[ 3 * i + 0 ];
-        colors[ 4 * i + 1 ] = is_single_color ? pcolors[1] : pcolors[ 3 * i + 1 ];
-        colors[ 4 * i + 2 ] = is_single_color ? pcolors[2] : pcolors[ 3 * i + 2 ];
-        colors[ 4 * i + 3 ] = is_single_alpha ? palphas[0] : palphas[i];
+        colors[ 3 * i + 0 ] = is_single_color ? pcolors[0] : pcolors[ 3 * i + 0 ];
+        colors[ 3 * i + 1 ] = is_single_color ? pcolors[1] : pcolors[ 3 * i + 1 ];
+        colors[ 3 * i + 2 ] = is_single_color ? pcolors[2] : pcolors[ 3 * i + 2 ];
     }
 
     return colors;
@@ -38,47 +35,44 @@ kvs::ValueArray<kvs::UInt8> VertexColors( const kvs::PolygonObject* polygon )
 /*===========================================================================*/
 /**
  *  @brief  Returns vertex-normal array.
- *  @param  polygon [in] pointer to the polygon object
+ *  @param  point [in] pointer to the point object
  */
 /*===========================================================================*/
-kvs::ValueArray<kvs::Real32> VertexNormals( const kvs::PolygonObject* polygon )
+kvs::ValueArray<kvs::Real32> VertexNormals( const kvs::PointObject* point_object )
 {
-    if ( polygon->normals().size() == 0 )
-    {
-        return kvs::ValueArray<kvs::Real32>();
-    }
+    return kvs::ValueArray<kvs::Real32>();
 
-    kvs::ValueArray<kvs::Real32> normals;
-    switch ( polygon->normalType() )
-    {
-    case kvs::PolygonObject::VertexNormal:
-    {
-        normals = polygon->normals();
-        break;
-    }
-    case kvs::PolygonObject::PolygonNormal:
-    {
-        // Same normal vectors are assigned for each vertex of the polygon.
-        const size_t npolygons = polygon->normals().size() / 3;
-        const size_t nnormals = npolygons * 3;
-        normals.allocate( nnormals * 3 );
-        kvs::Real32* pnormals = normals.data();
-        for ( size_t i = 0; i < npolygons; i++ )
-        {
-            const kvs::Vec3 n = polygon->normal(i);
-            for ( size_t j = 0; j < 3; j++ )
-            {
-                *(pnormals++) = n.x();
-                *(pnormals++) = n.y();
-                *(pnormals++) = n.z();
-            }
-        }
-        break;
-    }
-    default: break;
-    }
+    // kvs::ValueArray<kvs::Real32> normals;
+    // switch ( polygon->normalType() )
+    // {
+    // case kvs::PolygonObject::VertexNormal:
+    // {
+    //     normals = polygon->normals();
+    //     break;
+    // }
+    // case kvs::PolygonObject::PolygonNormal:
+    // {
+    //     // Same normal vectors are assigned for each vertex of the polygon.
+    //     const size_t npolygons = polygon->normals().size() / 3;
+    //     const size_t nnormals = npolygons * 3;
+    //     normals.allocate( nnormals * 3 );
+    //     kvs::Real32* pnormals = normals.data();
+    //     for ( size_t i = 0; i < npolygons; i++ )
+    //     {
+    //         const kvs::Vec3 n = polygon->normal(i);
+    //         for ( size_t j = 0; j < 3; j++ )
+    //         {
+    //             *(pnormals++) = n.x();
+    //             *(pnormals++) = n.y();
+    //             *(pnormals++) = n.z();
+    //         }
+    //     }
+    //     break;
+    // }
+    // default: break;
+    // }
 
-    return normals;
+    // return normals;
 }
 
 void DrawRect()
@@ -110,8 +104,8 @@ DepthPeelingRenderer::DepthPeelingRenderer():
     m_width( 0 ),
     m_height( 0 ),
     m_object( NULL ),
-    m_has_normal( false ),
-    m_has_connection( false ),
+    // m_has_normal( false ),
+    // m_has_connection( false ),
     m_shader( NULL ),
     m_layer_level( 1 )
 {
@@ -129,11 +123,10 @@ DepthPeelingRenderer::~DepthPeelingRenderer()
 //  709: renderer->exec( object, m_camera, m_light );
 void DepthPeelingRenderer::exec( kvs::ObjectBase* object, kvs::Camera* camera, kvs::Light* light )
 {
-    // DownCast: kvs::ObjectBase* → kvs::PolygonObject*
-    kvs::PolygonObject* polygon = kvs::PolygonObject::DownCast( object );
-    m_has_normal = polygon->normals().size() > 0;
-    m_has_connection = polygon->numberOfConnections() > 0;
-    if ( !m_has_normal ) setEnabledShading( false );
+    // // DownCast: kvs::ObjectBase* → kvs::PolygonObject*
+    // kvs::PolygonObject* polygon = kvs::PolygonObject::DownCast( object );
+    kvs::PointObject* point_object = kvs::PointObject::DownCast( object );
+    setEnabledShading( false );
 
     BaseClass::startTimer();
     kvs::OpenGL::WithPushedAttrib p( GL_ALL_ATTRIB_BITS );
@@ -148,7 +141,7 @@ void DepthPeelingRenderer::exec( kvs::ObjectBase* object, kvs::Camera* camera, k
         m_height = height;
         m_object = object;
         this->create_shader_program();
-        this->create_buffer_object( polygon );
+        this->create_buffer_object( point_object );
         this->create_framebuffer( width, height );
     }
 
@@ -170,14 +163,14 @@ void DepthPeelingRenderer::exec( kvs::ObjectBase* object, kvs::Camera* camera, k
         m_blending_shader.release();
         m_finalizing_shader.release();
         this->create_shader_program();
-        this->create_buffer_object( polygon );
+        this->create_buffer_object( point_object );
     }
 
     // Peeling Processing
     this->initialize_pass();
     for ( size_t i = 0; i < m_layer_level; i++ )
     {
-        this->peel_pass( polygon );
+        this->peel_pass( point_object );
     }
     this->finalize_pass();
 
@@ -242,7 +235,7 @@ void DepthPeelingRenderer::create_shader_program()
     }
 }
 
-void DepthPeelingRenderer::create_buffer_object( const kvs::PolygonObject* polygon )
+void DepthPeelingRenderer::create_buffer_object( const kvs::PointObject* point_object )
 {
     // if ( polygon->polygonType() != kvs::PolygonObject::Triangle )
     // {
@@ -250,15 +243,15 @@ void DepthPeelingRenderer::create_buffer_object( const kvs::PolygonObject* polyg
     //     return;
     // }
 
-    if ( polygon->colors().size() != 3 && polygon->colorType() == kvs::PolygonObject::PolygonColor )
-    {
-        kvsMessageError("Not supported polygon color type.");
-        return;
-    }
+    // if ( point_object->colors().size() != 3 && point_object->colorType() == kvs::PolygonObject::PolygonColor )
+    // {
+    //     kvsMessageError("Not supported polygon color type.");
+    //     return;
+    // }
 
-    kvs::ValueArray<kvs::Real32> coords = polygon->coords();
-    kvs::ValueArray<kvs::UInt8> colors = ::VertexColors( polygon );
-    kvs::ValueArray<kvs::Real32> normals = ::VertexNormals( polygon );
+    kvs::ValueArray<kvs::Real32> coords = point_object->coords();
+    kvs::ValueArray<kvs::UInt8> colors = ::VertexColors( point_object );
+    kvs::ValueArray<kvs::Real32> normals = ::VertexNormals( point_object );
 
     const size_t coord_size = coords.byteSize();
     const size_t color_size = colors.byteSize();
@@ -275,14 +268,14 @@ void DepthPeelingRenderer::create_buffer_object( const kvs::PolygonObject* polyg
     }
     m_vbo.unbind();
 
-    if ( m_has_connection )
-    {
-        const size_t connection_size = polygon->connections().byteSize();
-        m_ibo.create( connection_size );
-        m_ibo.bind();
-        m_ibo.load( connection_size, polygon->connections().data(), 0 );
-        m_ibo.unbind();
-    }
+    // if ( m_has_connection )
+    // {
+    //     const size_t connection_size = polygon->connections().byteSize();
+    //     m_ibo.create( connection_size );
+    //     m_ibo.bind();
+    //     m_ibo.load( connection_size, polygon->connections().data(), 0 );
+    //     m_ibo.unbind();
+    // }
 }
 
 void DepthPeelingRenderer::create_framebuffer( const size_t width, const size_t height )
@@ -378,7 +371,7 @@ void DepthPeelingRenderer::finalize_pass()
     ::DrawRect();
 }
 
-void DepthPeelingRenderer::peel_pass( const kvs::PolygonObject* polygon )
+void DepthPeelingRenderer::peel_pass( const kvs::PointObject* point_object )
 {
     const int front = m_cycle; // 0 or 1
     const int back = 2;
@@ -394,7 +387,7 @@ void DepthPeelingRenderer::peel_pass( const kvs::PolygonObject* polygon )
 
         kvs::Texture::Binder tex10( m_depth_buffer[front], 10 );
         kvs::Texture::Binder tex11( m_color_buffer[front], 11 );
-        this->draw( polygon );
+        this->draw( point_object );
     }
 
     kvs::FrameBufferObject::Binder fbo2( m_framebuffer[target] );
@@ -411,7 +404,7 @@ void DepthPeelingRenderer::peel_pass( const kvs::PolygonObject* polygon )
     }
 }
 
-void DepthPeelingRenderer::draw( const kvs::PolygonObject* polygon )
+void DepthPeelingRenderer::draw( const kvs::PointObject* point_object )
 {
     kvs::VertexBufferObject::Binder vbo( m_vbo );
     kvs::ProgramObject::Binder shader( m_peeling_shader );
@@ -425,11 +418,11 @@ void DepthPeelingRenderer::draw( const kvs::PolygonObject* polygon )
     m_peeling_shader.setUniform( "ModelViewProjectionMatrix", PM );
     m_peeling_shader.setUniform( "NormalMatrix", N );
 
-    const size_t nconnections = polygon->numberOfConnections();
-    const size_t nvertices = polygon->numberOfVertices();
-    const size_t npolygons = nconnections == 0 ? nvertices / 3 : nconnections;
+    // const size_t nconnections = point_object->numberOfConnections();
+    const size_t nvertices = point_object->numberOfVertices();
+    // const size_t npolygons = nconnections == 0 ? nvertices / 3 : nconnections;
     const size_t coord_size = nvertices * 3 * sizeof( kvs::Real32 );
-    const size_t color_size = nvertices * 4 * sizeof( kvs::UInt8 );
+    // const size_t color_size = nvertices * 4 * sizeof( kvs::UInt8 );
 
     KVS_GL_CALL( glPolygonMode( GL_FRONT_AND_BACK, GL_FILL ) );
 
@@ -441,31 +434,15 @@ void DepthPeelingRenderer::draw( const kvs::PolygonObject* polygon )
     KVS_GL_CALL( glEnableClientState( GL_COLOR_ARRAY ) );
     KVS_GL_CALL( glColorPointer( 4, GL_UNSIGNED_BYTE, 0, (GLbyte*)NULL + coord_size ) );
 
-    // Enable normals.
-    if ( m_has_normal )
-    {
-        KVS_GL_CALL( glEnableClientState( GL_NORMAL_ARRAY ) );
-        KVS_GL_CALL( glNormalPointer( GL_FLOAT, 0, (GLbyte*)NULL + coord_size + color_size ) );
-    }
+    // // Enable normals.
+    // if ( m_has_normal )
+    // {
+    //     KVS_GL_CALL( glEnableClientState( GL_NORMAL_ARRAY ) );
+    //     KVS_GL_CALL( glNormalPointer( GL_FLOAT, 0, (GLbyte*)NULL + coord_size + color_size ) );
+    // }
 
-    // Draw triangles.
-    if ( m_has_connection )
-    {
-        kvs::IndexBufferObject::Binder bind3( m_ibo );
-        KVS_GL_CALL( glDrawElements( GL_TRIANGLES, 3 * npolygons, GL_UNSIGNED_INT, 0 ) );
-        KVS_GL_CALL( glDrawElements( GL_TRIANGLES, 3 * npolygons, GL_UNSIGNED_INT, 0 ) );
-
-        // KVS_GL_CALL( glDrawArrays( GL_POINTS, 0, nvertices ) );
-    }
-    else 
-    {
-        // Draw polygons.
-        // KVS_GL_CALL( glDrawArrays( GL_TRIANGLES, 0, 3 * npolygons ) );
-
-        // Draw points.
-        std::cout << "nvertices: " << nvertices << "\n";
-        KVS_GL_CALL( glDrawArrays( GL_POINTS, 0, nvertices ) );
-    }
+    // Draw points.
+    KVS_GL_CALL( glDrawArrays( GL_POINTS, 0, nvertices ) );
 
     // Disable coords.
     KVS_GL_CALL( glDisableClientState( GL_VERTEX_ARRAY ) );
@@ -473,11 +450,11 @@ void DepthPeelingRenderer::draw( const kvs::PolygonObject* polygon )
     // Disable colors.
     KVS_GL_CALL( glDisableClientState( GL_COLOR_ARRAY ) );
 
-    // Disable normals.
-    if ( m_has_normal )
-    {
-        KVS_GL_CALL( glDisableClientState( GL_NORMAL_ARRAY ) );
-    }
+    // // Disable normals.
+    // if ( m_has_normal )
+    // {
+    //     KVS_GL_CALL( glDisableClientState( GL_NORMAL_ARRAY ) );
+    // }
 }
 
 void DepthPeelingRenderer::blend()

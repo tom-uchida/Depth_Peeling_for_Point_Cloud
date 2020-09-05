@@ -9,6 +9,8 @@
 #include <kvs/PolygonRenderer>
 
 #include <kvs/ParticleBasedRenderer>
+#include <kvs/PointObject>
+#include <kvs/PointRenderer>
 
 namespace kvs
 {
@@ -32,8 +34,8 @@ private:
     size_t m_width; ///< window width
     size_t m_height; ///< window height
     const kvs::ObjectBase* m_object; ///< pointer to the rendering object
-    bool m_has_normal; ///< check flag for the normal array
-    bool m_has_connection; ///< check flag for the connection array
+    // bool m_has_normal; ///< check flag for the normal array
+    // bool m_has_connection; ///< check flag for the connection array
     kvs::Shader::ShadingModel* m_shader; ///< shading method
 
     kvs::VertexBufferObject m_vbo; ///< vertex buffer object
@@ -65,14 +67,14 @@ public:
 
 private:
     void create_shader_program();
-    void create_buffer_object( const kvs::PolygonObject* polygon );
+    void create_buffer_object( const kvs::PointObject* point_object );
     void create_framebuffer( const size_t width, const size_t height );
     void update_framebuffer( const size_t width, const size_t height );
 
     void initialize_pass();
     void finalize_pass();
-    void peel_pass( const kvs::PolygonObject* polygon );
-    void draw( const kvs::PolygonObject* polygon );
+    void peel_pass( const kvs::PointObject* point_object );
+    void draw( const kvs::PointObject* point_object );
     void blend();
 };
 
