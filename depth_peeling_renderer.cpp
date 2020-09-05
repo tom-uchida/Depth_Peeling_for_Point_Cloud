@@ -21,12 +21,13 @@ kvs::ValueArray<kvs::UInt8> VertexColors( const kvs::PointObject* point_object )
     const bool is_single_color = point_object->colors().size() == 3;
     const kvs::UInt8* pcolors = point_object->colors().data();
 
-    kvs::ValueArray<kvs::UInt8> colors( nvertices * 3 );
+    kvs::ValueArray<kvs::UInt8> colors( nvertices * 4 );
     for ( size_t i = 0; i < nvertices; i++ )
     {
-        colors[ 3 * i + 0 ] = is_single_color ? pcolors[0] : pcolors[ 3 * i + 0 ];
-        colors[ 3 * i + 1 ] = is_single_color ? pcolors[1] : pcolors[ 3 * i + 1 ];
-        colors[ 3 * i + 2 ] = is_single_color ? pcolors[2] : pcolors[ 3 * i + 2 ];
+        colors[ 4 * i + 0 ] = is_single_color ? pcolors[0] : pcolors[ 3 * i + 0 ];
+        colors[ 4 * i + 1 ] = is_single_color ? pcolors[1] : pcolors[ 3 * i + 1 ];
+        colors[ 4 * i + 2 ] = is_single_color ? pcolors[2] : pcolors[ 3 * i + 2 ];
+        colors[ 4 * i + 3 ] = 0;
     }
 
     return colors;
