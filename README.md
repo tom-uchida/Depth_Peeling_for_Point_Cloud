@@ -27,3 +27,8 @@ $ ./spbr_dp input.ply
 |Layer80|Layer90|Layer100|
 |:-:|:-:|:-:|
 |<img src="figures/LayerLevel80.bmp">|<img src="figures/LayerLevel90.bmp">|<img src="figures/LayerLevel100.bmp">|
+
+## Layer Averaging
+|Original|Layer1-5|Layer1-10|
+|:-:|:-:|:-:|
+|<img src="figures/LayerAvg/original.bmp">|<img src="figures/LayerAvg/Layer_Averaging_L1-5.png">|<img src="figures/LayerAvg/Layer_Averaging_L1-10.png">|
