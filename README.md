@@ -12,6 +12,11 @@ $ ./spbr_dp input.ply
 ```
 
 ## Visualization Results
+
+<center>
+<img src="figures/LayerLevel1-90.gif">
+</center>
+
 |Layer1|Layer5|Layer10|
 |:-:|:-:|:-:|
 |<img src="figures/LayerLevel1.bmp">|<img src="figures/LayerLevel5.bmp">|<img src="figures/LayerLevel10.bmp">|

@@ -39,6 +39,7 @@
 #include "mainfn_utility.h"
 
 #include "depth_peeling_renderer.h" // UCHIDA 200902
+#include <kvs/Screen> // UCHIDA 200908
 
 //#define DEBUG_MAIN
 
@@ -179,6 +180,13 @@ int mainsub_spbr_plyascii ( int argc, char** argv )
     KeyPressEvent    key;
     screen.addEvent( &init );
     screen.addEvent( &key );
+
+    // Add timer event
+    const int msec = 1000;
+    TimerEvent timer_event( msec,
+                            std::to_string( spbr_engine->layerLevel() ), 
+                            screen.scene() );
+    screen.addEvent( &timer_event );
 
     // Display mene in console 
     std::cout << "** Executing Depth Peeling Rendering..." << std::endl;
