@@ -1,11 +1,11 @@
 .DS_store
 .vscode/
 
-CONVERT2BINARY/
-PLY_DATA/
-PLY_SUPPORT/
-SPBR_DATA/
-IMAGE_DATA/
+src/CONVERT2BINARY/
+src/PLY_DATA/
+src/PLY_SUPPORT/
+src/SPBR_DATA/
+src/IMAGE_DATA/
 
 src/*.sh
 src/*.o
