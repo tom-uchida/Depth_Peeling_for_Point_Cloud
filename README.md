@@ -8,6 +8,8 @@
 ## Usage
 ```
 $ ls .param.spbr
+#/LayerLevel 1
+
 $ ./spbr_dp input.ply
 ```
 
