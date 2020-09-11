@@ -1,0 +1,9 @@
+* Camera zoom %lf ==> %lg
+
+        //----- CameraZoom ----- 
+        if ( !strncmp( buf, CAMERA_ZOOM_COMMAND, strlen(CAMERA_ZOOM_COMMAND) ) ) { 
+          double f_zoom ;
+          sscanf ( buf, "%s %lf", dummy, &f_zoom ); //TANAKA_ZOOM
+	  setCameraZoom ( f_zoom ) ;
+        } else 
+

@@ -1,0 +1,221 @@
+2020/05/10 version beta-019a
+* fpscount.h and drawFPS() in mainfn_utility.h is updated
+  by replacing kvs::glut::Label with kvs::Label.
+  * For Retina display
+* The revised drawFPS() is called just after screen.show().
+  in the 8 mainsub() functions.
+* Test programs are implemented within Makefile.
+
+2020/05/02 version beta-018a,b
+* DOC/INSTALL is created.
+* DOC/README.txt is updated
+* make test1,2,3,4 are implemented.
+
+
+2020/05/02 version beta-017a
+* In wireframebox.h, explicits casts to Real32 are added:
+inline kvs::LineObject* WireframeBox ( const kvs::Vector3d& min  = kvs::Vector3d( -1.0, -1.0, -1.0),
+				       const kvs::Vector3d& max  = kvs::Vector3d( +1.0, +1.0, +1.0) )
+{
+  // coords
+  kvs::Real32 coords[24] = {  
+			    (kvs::Real32)min.x(), (kvs::Real32)min.y(), (kvs::Real32)min.z(), // v0
+                            (kvs::Real32)max.x(), (kvs::Real32)min.y(), (kvs::Real32)min.z(), // v1
+                            (kvs::Real32)max.x(), (kvs::Real32)max.y(), (kvs::Real32)min.z(), // v2
+                            (kvs::Real32)min.x(), (kvs::Real32)max.y(), (kvs::Real32)min.z(), // v3  
+                            (kvs::Real32)min.x(), (kvs::Real32)min.y(), (kvs::Real32)max.z(), // v4
+                            (kvs::Real32)max.x(), (kvs::Real32)min.y(), (kvs::Real32)max.z(), // v5
+                            (kvs::Real32)max.x(), (kvs::Real32)max.y(), (kvs::Real32)max.z(), // v6
+                            (kvs::Real32)min.x(), (kvs::Real32)max.y(), (kvs::Real32)max.z()  // v7
+                           }; 
+...
+}
+
+
+2019/03/10 version beta-016b
+* Misprint in displaying the commands by "-h" 
+   is corrected (#/StandardBoundingBox)
+
+
+2018/11/30 version beta-016a
+* Shrewd's refined rotaton is implemented 
+* Updated files: spcomment.h, event_control.h
+* Created files: camera_control.h
+
+
+2018/11/20 version beta-015c
+* Code refinement of 
+   SPBR::readPointData_Binary() 
+* Debugging codes are removed:
+
+
+2018/11/20 version beta-015a,b
+* Type of SPBR::m_numParticles is changed 
+   from size_t to unsinged long:
+  unsigned long        m_numParticles  ; //TANAKA_181230
+* Updated parts are marked by "//TANAKA_181230"
+
+
+2018/11/20 version beta-014a
+* #/MouseZoomSpeed command is supported
+* #/MouseRotSpeed command is supported
+
+
+2018/11/20 version beta-013b
+* A misprint of the usage is corrected.
+
+
+2018/11/09 version beta-013a
+* #/StandardBoundingBox command is supported
+
+
+2018/11/08 version beta-012b
+*  #/FPS command is prohibited in OPBR
+*  Supprted data formats are reflected on 
+    the help message.
+
+
+2018/11/07 version beta-012a
+* Ply type XYZRGBA and XYZNxNyNzRGBA are supported.
+* Enum for the  ply type  is defined:
+enum PLY_PROPERTY_TYPE { XYZ           = 0,
+                         XYZRGB        = 1,
+                         XYZNxNyNz     = 2,
+                         XYZNxNyNzRGB  = 3,
+                         XYZRGBA       = 4,
+                         XYZNxNyNzRGBA = 5 };
+
+
+2018/11/06 version beta-011a
+* Grayscale command is implemented for all kinds of 
+   input data.
+* The point_grayscale() function is removed.
+   SPBR::getGrayscaleColor() is implemented instead.
+* SPBR::m_grayscale_id  is defined.
+* Code refinement of event_control.h.
+   Warning messages are suppressed (by Watabe)
+
+
+2018/11/05 version beta-010a
+* Rotation is supported (key event)
+* #/Grayscale command is supported for PLYASCC/PLYBIN
+* Source-code refinement to correnpond to 
+   support of multiple file formats.
+* Set enum to constructors to distinguish each of them:
+...
+ // Constructor for SPBR ASCII data
+ SPBR ( const char* input_file, SPBR_ASCII_FORMAT file_format );
+...
+ // Constructor for SPBR Binary Data
+ SPBR ( const char* input_file, SPBR_BINARY_FORMAT file_format );
+...
+ // Constructor for PLY ASCII file data
+ SPBR(const char* input_file, PLY_ASCII_FORMAT format_type);//2018/8
+...
+ // Constructor for PLY Binary file data
+ SPBR(const char* input_file, PLY_BINARY_FORMAT format_type);
+...
+
+
+2018/03/06 version beta-09a
+* A new command implemented 
+   #/CameraAngleByAxis axis_name 
+   axis_name = +X, +Y, +Z, -X, -Y, -Z
+
+2018/03/03 version beta-08a
+* Code refinement
+** Strings in version.h is updated.
+** The Comment in generated PLY file is refined.
+
+
+2018/02/27 version beta-07a
+ * #/WritePLY_ASCII command is implemented.
+
+
+2018/02/27 version beta-06a
+ * 10-column PLY format is supported
+   x y z nx ny nz r g b a 
+
+
+2017/11/05 version beta-005a
+ * ply_support.h is renamed to const_ply.h
+
+
+2017/11/05 version beta-004c
+ *  SPBR::readPLYPointData( void ) is updated.
+    PLY file with XYZ RGBA is supported.
+
+
+2017/11/05 version beta-004b
+ * PLYTHIN is updated and bug correction is done.
+ *  spbr_main_ascii() ==> mainsub_spbr_ascii(), etc
+ *  opbr_main_ascii() ==> mainsub_opbr_ascii(), etc
+ *  spbr_const.h ==> const_spbr.h
+
+
+2017/11/05 version beta-004a
+ * Rename cpp files
+ *  spbr_main_ascii.cpp ==> mainsub_spbr_ascii.cpp, etc
+ *  opbr_main_ascii.cpp ==> mainsub_opbr_ascii.cpp, etc
+ *  spbr_const.h ==> const_spbr.h
+
+
+2017/11/05 version beta-003e
+ * SPBR parameter file .param.spbr 
+   in the current directory is read for PLY data.
+
+
+2017/11/05 version beta-003d
+ * In PLY format, "element vertex num" is
+   used to decide num particles 
+   without reading the input datafile twice.
+
+
+2017/11/05 version beta-003c
+ * PLY_SUPPORT/ folder is cleated.
+ ** plythin.cpp is created.
+ * SPBR::SPBR() for ply is updated.
+ ** ply-ascii file is now supported.
+
+
+2017/11/05 version beta-003b
+ * spbr_ply_ascii.cpp is created.
+ * spbr.h is updated
+   //---- For PLY file data
+   public:
+    SPBR ( const char* input_file, NON_SPBR_FORMAT format_type );
+   private:
+    void generatePLYPointObject( kvs::PointObject* point_object );
+    void readPLYHeader_and_countParticles ( void );
+    void readPLYPointData ( void ) ;
+ *  SPBR ( const char* input_file, NON_SPBR_FORMAT format_type );
+   is called in opbr_main_ply_ascii() and spbr_main_ply_ascii().
+ * Note: 
+   SPBR ( const char* input_file, NON_SPBR_FORMAT format_type ) 
+   is still a dummy. It is identical with SPBR (const char* input_file);
+
+
+2017/11/05 version beta-003a
+  * checkInputFiles() and checkSPBR_Extension() is updated 
+    to support PLY-ascii files (mainfn_utility.h).
+  * An if statement is added to spbr and opbr main functions
+    in MAIN/.
+
+
+2017/11/04 version beta-002b
+  * file_format.h is created.
+  * is_ply.h is created.
+  * TEST_PLY/ folder is created.
+  * Code refinement of MAIN/xxx_main.cpp
+
+
+2017/03/12 version beta-002a
+  * Makefile is updated
+    * $(INSTALL_DIR) is automatically created if not exists 
+      when installing the software.
+  * A small misprint is fixed in the help message 
+    that is displayed by "spbr -h".
+
+
+2016/07/09 version beta-001a
+First public version.

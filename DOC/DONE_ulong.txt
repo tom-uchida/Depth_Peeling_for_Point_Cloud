@@ -1,0 +1,102 @@
+spbr.h
+  L241:
+    unsigned long        m_numParticles  ; //TANAKA_181230
+
+
+spbr_spbrascii.cpp 
+  L343 ( readHeader_and_countParticles(), read ):
+    unsigned long n_tmp; //TANAKA_181230
+
+  L344:( readHeader_and_countParticles(), read ):
+    sscanf ( buf, "%s %lu", dummy, &n_tmp ); //TANAKA_181230
+
+  L345:( readHeader_and_countParticles(), read ):
+    m_numParticles = (unsigned long)n_tmp; //TANAKA_181230
+
+  L457 (readPointData( void ), read)
+  unsigned long point_counter = 0 ;//TANAKA_181230
+
+
+spbr_spbrbin.cpp 
+  L343 ( SPBR::readHeader_Binary(), read ):
+    m_numParticles = (unsigned long)n_tmp; //TANAKA_181230
+
+  L344 (SPBR::readHeader_Binary(), read):
+    sscanf ( buf, "%s %lu", dummy, &n_tmp );//TANAKA_181230
+
+  L345 (SPBR::readHeader_Binary(), read):
+    unsigned long n_tmp;//TANAKA_181230
+
+support_ply.h
+  L191 (count_ply_vertex(), read):
+    inline unsigned long count_ply_vertex ( const char* filename ) //TANAKA_181230
+
+  L194 (count_ply_vertex(), read):
+    unsigned long num_vertex = 0 ; // initialization //TANAKA_181230
+
+  L210 (count_ply_vertex(), read)::
+    sscanf ( word3, "%lu", & num_vertex ); //TANAKA_181230
+
+spbr_plybin.cpp 
+  L122 (SPBR::readPLYHeader_and_countParticles_Binary(), read)
+    m_numParticles = count_ply_vertex ( m_input_file );//TANAKA_181230 (unchanged)
+
+  L525 ( SPBR::read_SPBR_ParameterFile_Binary(), read )
+          unsigned long n_tmp; //TANAKA_181230
+
+  L526 ( SPBR::read_SPBR_ParameterFile_Binary(), read )
+          sscanf ( buf, "%s %lu", dummy, &n_tmp ); //TANAKA_181230
+
+  L527 ( SPBR::read_SPBR_ParameterFile_Binary(), read )
+          m_numParticles = (unsigned long)n_tmp; // TANAKA_SPBR
+
+spbr_plyascii.cpp 
+
+  L122 ( SPBR::readPLYHeader_and_countParticles ( void ), read )
+    m_numParticles = count_ply_vertex ( m_input_file );//TANAKA_181230 (unchanged)
+
+  L168 ( SPBR::readPLYPointData(), read )
+    unsigned long point_counter = 0 ;//TANAKA_181230
+
+  L565 ( SPBR::read_SPBR_ParameterFile(), read )
+          unsigned long n_tmp; //TANAKA_181230
+
+  L566 ( SPBR::read_SPBR_ParameterFile(), read )
+          sscanf ( buf, "%s %lu", dummy, &n_tmp ); //TANAKA_181230
+
+  L567 ( SPBR::read_SPBR_ParameterFile(), read )
+          m_numParticles = (unsigned long)n_tmp; //TANAKA_181230
+
+
+==================
+
+DONE: spbr_plyascii.cpp:  m_numParticles = count_ply_vertex ( m_input_file );
+
+DONE: spbr_plyascii.cpp:      if ( point_counter > m_numParticles ) {
+DONE: spbr_plyascii.cpp:  if ( point_counter < m_numParticles ) {
+DONE: spbr_plyascii.cpp:    m_numParticles = point_counter;
+
+DONE: spbr_plyascii.cpp:          m_numParticles = (unsigned int)n_tmp; 
+
+
+========================
+
+DONE: spbr_plybin.cpp:  m_numParticles = count_ply_vertex ( m_input_file );
+
+DONE: spbr_plybin.cpp:          m_numParticles = (unsigned int)n_tmp; 
+
+========================
+
+DONE: spbr_spbrascii.cpp:          m_numParticles = (unsigned int)n_tmp; 
+
+DONE: spbr_spbrascii.cpp:      if ( point_counter > m_numParticles ) {
+DONE: spbr_spbrascii.cpp:  if ( point_counter < m_numParticles ) {
+DONE: spbr_spbrascii.cpp:    m_numParticles = point_counter;
+
+========================
+
+DONE: spbr_spbrbin.cpp:          m_numParticles = (unsigned int)n_tmp;
+
+========================
+
+DONE: spbr.h:      size_t     m_numParticles     ; 

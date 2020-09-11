@@ -1,0 +1,45 @@
+<<Build, Installation, and tests of SPBR (short version)>>
+ 
+ * For details, see README.txt
+ *  Below '$' means the command prompt.
+
+(1) How to build SPBR
+ First, edit INSTALL_DIR in Makefile, if necessary.
+ The default setting is as follows:
+ INSTALL_DIR=$(HOME)/local/bin
+
+ Then execute the followings: 
+
+    $ sh config_spbr.sh
+    $ make clean 
+    $ make 
+    ($ rehash)
+
+    Note: "rehash" is not supported in Bone Shell.
+          Restart your command terminal,
+	  if you are using Bone Shell
+
+(2) How to install SPBR
+
+    $ make install
+
+    Note: This copies the built executable files,
+           "spbr" and "opbr", into the directory
+	   by "INSTALL_DIR" (see (1) above). 
+
+    Note: (1) + (2) is equivalent to the following:
+      $ sh config_spbr.sh
+      $ make autoinstall
+
+(3) How to test SPBR
+  Transparent visualization (spbr):
+    $ make test1 //SPBR-ACII data
+    $ make test2 //PLY-ACII data
+    $ make test5 //SPBR-binary data
+    $ make test6 //PLY-binary data
+
+  Opaque visualization (opbr):
+    $ make test3 //SPBR-ACII data
+    $ make test4 //PLY-ACII data
+    $ make test7 //SPBR-binary data
+    $ make test8 //PLY-binary data
