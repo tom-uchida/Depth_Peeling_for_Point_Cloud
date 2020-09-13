@@ -1,5 +1,9 @@
 # SPBR_Depth_Peeling
 
+|LayerLevel1-90|
+|:-:|
+|<img src="figures/LayerLevel1-90.gif">|
+
 ## New Command
 ```
 #/LayerLevel 1
@@ -14,10 +18,6 @@ $ ./spbr_dp input.ply
 ```
 
 ## Visualization Results
-
-<center>
-<img src="figures/LayerLevel1-90.gif">
-</center>
 
 |Layer1|Layer5|Layer10|
 |:-:|:-:|:-:|
