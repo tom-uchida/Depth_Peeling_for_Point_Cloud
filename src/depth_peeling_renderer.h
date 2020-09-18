@@ -22,20 +22,15 @@ class Light;
 namespace local
 {
 
-// class DepthPeelingRenderer : public kvs::PolygonRenderer
-// class PolygonRenderer : public kvs::RendererBase
 class DepthPeelingRenderer : public kvs::glsl::ParticleBasedRenderer
 {
     kvsModule( local::DepthPeelingRenderer, Renderer );
-    // kvsModuleBaseClass( kvs::PolygonRenderer );
     kvsModuleBaseClass( kvs::glsl::ParticleBasedRenderer );
 
 private:
     size_t m_width; ///< window width
     size_t m_height; ///< window height
     const kvs::ObjectBase* m_object; ///< pointer to the rendering object
-    // bool m_has_normal; ///< check flag for the normal array
-    // bool m_has_connection; ///< check flag for the connection array
     kvs::Shader::ShadingModel* m_shader; ///< shading method
 
     kvs::VertexBufferObject m_vbo; ///< vertex buffer object

@@ -42,38 +42,6 @@ kvs::ValueArray<kvs::UInt8> VertexColors( const kvs::PointObject* point_object )
 kvs::ValueArray<kvs::Real32> VertexNormals( const kvs::PointObject* point_object )
 {
     return kvs::ValueArray<kvs::Real32>();
-
-    // kvs::ValueArray<kvs::Real32> normals;
-    // switch ( polygon->normalType() )
-    // {
-    // case kvs::PolygonObject::VertexNormal:
-    // {
-    //     normals = polygon->normals();
-    //     break;
-    // }
-    // case kvs::PolygonObject::PolygonNormal:
-    // {
-    //     // Same normal vectors are assigned for each vertex of the polygon.
-    //     const size_t npolygons = polygon->normals().size() / 3;
-    //     const size_t nnormals = npolygons * 3;
-    //     normals.allocate( nnormals * 3 );
-    //     kvs::Real32* pnormals = normals.data();
-    //     for ( size_t i = 0; i < npolygons; i++ )
-    //     {
-    //         const kvs::Vec3 n = polygon->normal(i);
-    //         for ( size_t j = 0; j < 3; j++ )
-    //         {
-    //             *(pnormals++) = n.x();
-    //             *(pnormals++) = n.y();
-    //             *(pnormals++) = n.z();
-    //         }
-    //     }
-    //     break;
-    // }
-    // default: break;
-    // }
-
-    // return normals;
 }
 
 void DrawRect()
@@ -105,12 +73,11 @@ DepthPeelingRenderer::DepthPeelingRenderer():
     m_width( 0 ),
     m_height( 0 ),
     m_object( NULL ),
-    // m_has_normal( false ),
-    // m_has_connection( false ),
     m_shader( NULL ),
     m_layer_level( 1 )
 {
-    // PolygonRendererGLSL.h
+    // kvs::glsl::ParticleBasedRenderer : public kvs::StochasticRendererBase
+    // kvs::StochasticRendererBase : public kvs::RendererBase
     this->setShader( kvs::Shader::Lambert() );
 }
 
@@ -122,25 +89,24 @@ DepthPeelingRenderer::~DepthPeelingRenderer()
 // Scene.cpp:
 //  687: void Scene::paintFunction()
 //  709: renderer->exec( object, m_camera, m_light );
-void DepthPeelingRenderer::exec( kvs::ObjectBase* object, kvs::Camera* camera, kvs::Light* light )
+void DepthPeelingRenderer::exec( kvs::ObjectBase* _object, kvs::Camera* _camera, kvs::Light* _light )
 {
-    // // DownCast: kvs::ObjectBase* → kvs::PolygonObject*
-    // kvs::PolygonObject* polygon = kvs::PolygonObject::DownCast( object );
-    kvs::PointObject* point_object = kvs::PointObject::DownCast( object );
+    // DownCast: kvs::ObjectBase* → kvs::PointObject*
+    kvs::PointObject* point_object = kvs::PointObject::DownCast( _object );
     setEnabledShading( false );
 
     BaseClass::startTimer();
     kvs::OpenGL::WithPushedAttrib p( GL_ALL_ATTRIB_BITS );
 
     // Prepare for rendering
-    const size_t width = camera->windowWidth();
-    const size_t height = camera->windowHeight();
+    const size_t width = _camera->windowWidth();
+    const size_t height = _camera->windowHeight();
     const bool window_created = m_width == 0 && m_height == 0;
     if ( window_created )
     {
         m_width = width;
         m_height = height;
-        m_object = object;
+        m_object = _object;
         this->create_shader_program();
         this->create_buffer_object( point_object );
         this->create_framebuffer( width, height );
@@ -154,10 +120,10 @@ void DepthPeelingRenderer::exec( kvs::ObjectBase* object, kvs::Camera* camera, k
         this->update_framebuffer( width, height );
     }
 
-    const bool object_changed = m_object != object;
+    const bool object_changed = m_object != _object;
     if ( object_changed )
     {
-        m_object = object;
+        m_object = _object;
         m_vbo.release();
         m_ibo.release();
         m_peeling_shader.release();
@@ -176,7 +142,7 @@ void DepthPeelingRenderer::exec( kvs::ObjectBase* object, kvs::Camera* camera, k
     this->finalize_pass();
 
     BaseClass::stopTimer();
-}
+} // End of exec()
 
 void DepthPeelingRenderer::create_shader_program()
 {
@@ -234,25 +200,13 @@ void DepthPeelingRenderer::create_shader_program()
         m_finalizing_shader.setUniform( "background_color", m_background_color.toVec3() );
         m_finalizing_shader.unbind();
     }
-}
+} // End of create_shader_program()
 
-void DepthPeelingRenderer::create_buffer_object( const kvs::PointObject* point_object )
+void DepthPeelingRenderer::create_buffer_object( const kvs::PointObject* _point_object )
 {
-    // if ( polygon->polygonType() != kvs::PolygonObject::Triangle )
-    // {
-    //     kvsMessageError("Not supported polygon type.");
-    //     return;
-    // }
-
-    // if ( point_object->colors().size() != 3 && point_object->colorType() == kvs::PolygonObject::PolygonColor )
-    // {
-    //     kvsMessageError("Not supported polygon color type.");
-    //     return;
-    // }
-
-    kvs::ValueArray<kvs::Real32> coords = point_object->coords();
-    kvs::ValueArray<kvs::UInt8> colors = ::VertexColors( point_object );
-    kvs::ValueArray<kvs::Real32> normals = ::VertexNormals( point_object );
+    kvs::ValueArray<kvs::Real32> coords  = _point_object->coords();
+    kvs::ValueArray<kvs::UInt8>  colors  = ::VertexColors( _point_object );
+    kvs::ValueArray<kvs::Real32> normals = ::VertexNormals( _point_object );
 
     const size_t coord_size = coords.byteSize();
     const size_t color_size = colors.byteSize();
@@ -268,18 +222,9 @@ void DepthPeelingRenderer::create_buffer_object( const kvs::PointObject* point_o
         m_vbo.load( normal_size, normals.data(), coord_size + color_size );
     }
     m_vbo.unbind();
+} // End of create_buffer_object()
 
-    // if ( m_has_connection )
-    // {
-    //     const size_t connection_size = polygon->connections().byteSize();
-    //     m_ibo.create( connection_size );
-    //     m_ibo.bind();
-    //     m_ibo.load( connection_size, polygon->connections().data(), 0 );
-    //     m_ibo.unbind();
-    // }
-}
-
-void DepthPeelingRenderer::create_framebuffer( const size_t width, const size_t height )
+void DepthPeelingRenderer::create_framebuffer( const size_t _width, const size_t _height )
 {
     for ( size_t i = 0; i < 3; i++ )
     {
@@ -288,14 +233,14 @@ void DepthPeelingRenderer::create_framebuffer( const size_t width, const size_t 
         m_color_buffer[i].setMinFilter( GL_NEAREST );
         m_color_buffer[i].setMagFilter( GL_NEAREST );
         m_color_buffer[i].setPixelFormat( GL_RGBA32F, GL_RGBA, GL_UNSIGNED_BYTE );
-        m_color_buffer[i].create( width, height );
+        m_color_buffer[i].create( _width, _height );
 
         m_depth_buffer[i].setWrapS( GL_REPEAT );
         m_depth_buffer[i].setWrapT( GL_REPEAT );
         m_depth_buffer[i].setMinFilter( GL_NEAREST );
         m_depth_buffer[i].setMagFilter( GL_NEAREST );
         m_depth_buffer[i].setPixelFormat( GL_DEPTH_COMPONENT32F, GL_DEPTH_COMPONENT, GL_UNSIGNED_BYTE );
-        m_depth_buffer[i].create( width, height );
+        m_depth_buffer[i].create( _width, _height );
 
         m_framebuffer[i].create();
         m_framebuffer[i].attachColorTexture( m_color_buffer[i] );
@@ -303,50 +248,50 @@ void DepthPeelingRenderer::create_framebuffer( const size_t width, const size_t 
     }
 
     m_peeling_shader.bind();
-    m_peeling_shader.setUniform( "width", static_cast<GLfloat>( width ) );
-    m_peeling_shader.setUniform( "height", static_cast<GLfloat>( height ) );
+    m_peeling_shader.setUniform( "width", static_cast<GLfloat>( _width ) );
+    m_peeling_shader.setUniform( "height", static_cast<GLfloat>( _height ) );
     m_peeling_shader.unbind();
 
     m_blending_shader.bind();
-    m_blending_shader.setUniform( "width", static_cast<GLfloat>( width ) );
-    m_blending_shader.setUniform( "height", static_cast<GLfloat>( height ) );
+    m_blending_shader.setUniform( "width", static_cast<GLfloat>( _width ) );
+    m_blending_shader.setUniform( "height", static_cast<GLfloat>( _height ) );
     m_blending_shader.unbind();
 
     m_finalizing_shader.bind();
-    m_finalizing_shader.setUniform( "width", static_cast<GLfloat>( width ) );
-    m_finalizing_shader.setUniform( "height", static_cast<GLfloat>( height ) );
+    m_finalizing_shader.setUniform( "width", static_cast<GLfloat>( _width ) );
+    m_finalizing_shader.setUniform( "height", static_cast<GLfloat>( _height ) );
     m_finalizing_shader.unbind();
-}
+} // End of create_framebuffer()
 
-void DepthPeelingRenderer::update_framebuffer( const size_t width, const size_t height )
+void DepthPeelingRenderer::update_framebuffer( const size_t _width, const size_t _height )
 {
     for ( size_t i = 0; i < 3; i++ )
     {
         m_color_buffer[i].release();
-        m_color_buffer[i].create( width, height );
+        m_color_buffer[i].create( _width, _height );
 
         m_depth_buffer[i].release();
-        m_depth_buffer[i].create( width, height );
+        m_depth_buffer[i].create( _width, _height );
 
         m_framebuffer[i].attachColorTexture( m_color_buffer[i] );
         m_framebuffer[i].attachDepthTexture( m_depth_buffer[i] );
     }
 
     m_peeling_shader.bind();
-    m_peeling_shader.setUniform( "width", static_cast<GLfloat>( width ) );
-    m_peeling_shader.setUniform( "height", static_cast<GLfloat>( height ) );
+    m_peeling_shader.setUniform( "width", static_cast<GLfloat>( _width ) );
+    m_peeling_shader.setUniform( "height", static_cast<GLfloat>( _height ) );
     m_peeling_shader.unbind();
 
     m_blending_shader.bind();
-    m_blending_shader.setUniform( "width", static_cast<GLfloat>( width ) );
-    m_blending_shader.setUniform( "height", static_cast<GLfloat>( height ) );
+    m_blending_shader.setUniform( "width", static_cast<GLfloat>( _width ) );
+    m_blending_shader.setUniform( "height", static_cast<GLfloat>( _height ) );
     m_blending_shader.unbind();
 
     m_finalizing_shader.bind();
-    m_finalizing_shader.setUniform( "width", static_cast<GLfloat>( width ) );
-    m_finalizing_shader.setUniform( "height", static_cast<GLfloat>( height ) );
+    m_finalizing_shader.setUniform( "width", static_cast<GLfloat>( _width ) );
+    m_finalizing_shader.setUniform( "height", static_cast<GLfloat>( _height ) );
     m_finalizing_shader.unbind();
-}
+} // End of update_framebuffer()
 
 void DepthPeelingRenderer::initialize_pass()
 {
@@ -372,7 +317,7 @@ void DepthPeelingRenderer::finalize_pass()
     ::DrawRect();
 }
 
-void DepthPeelingRenderer::peel_pass( const kvs::PointObject* point_object )
+void DepthPeelingRenderer::peel_pass( const kvs::PointObject* _point_object )
 {
     const int front = m_cycle; // 0 or 1
     const int back = 2;
@@ -388,7 +333,7 @@ void DepthPeelingRenderer::peel_pass( const kvs::PointObject* point_object )
 
         kvs::Texture::Binder tex10( m_depth_buffer[front], 10 );
         kvs::Texture::Binder tex11( m_color_buffer[front], 11 );
-        this->draw( point_object );
+        this->draw( _point_object );
     }
 
     kvs::FrameBufferObject::Binder fbo2( m_framebuffer[target] );
@@ -405,7 +350,7 @@ void DepthPeelingRenderer::peel_pass( const kvs::PointObject* point_object )
     }
 }
 
-void DepthPeelingRenderer::draw( const kvs::PointObject* point_object )
+void DepthPeelingRenderer::draw( const kvs::PointObject* _point_object )
 {
     kvs::VertexBufferObject::Binder vbo( m_vbo );
     kvs::ProgramObject::Binder shader( m_peeling_shader );
@@ -419,9 +364,7 @@ void DepthPeelingRenderer::draw( const kvs::PointObject* point_object )
     m_peeling_shader.setUniform( "ModelViewProjectionMatrix", PM );
     m_peeling_shader.setUniform( "NormalMatrix", N );
 
-    // const size_t nconnections = point_object->numberOfConnections();
-    const size_t nvertices = point_object->numberOfVertices();
-    // const size_t npolygons = nconnections == 0 ? nvertices / 3 : nconnections;
+    const size_t nvertices = _point_object->numberOfVertices();
     const size_t coord_size = nvertices * 3 * sizeof( kvs::Real32 );
     // const size_t color_size = nvertices * 4 * sizeof( kvs::UInt8 );
 
@@ -435,13 +378,6 @@ void DepthPeelingRenderer::draw( const kvs::PointObject* point_object )
     KVS_GL_CALL( glEnableClientState( GL_COLOR_ARRAY ) );
     KVS_GL_CALL( glColorPointer( 4, GL_UNSIGNED_BYTE, 0, (GLbyte*)NULL + coord_size ) );
 
-    // // Enable normals.
-    // if ( m_has_normal )
-    // {
-    //     KVS_GL_CALL( glEnableClientState( GL_NORMAL_ARRAY ) );
-    //     KVS_GL_CALL( glNormalPointer( GL_FLOAT, 0, (GLbyte*)NULL + coord_size + color_size ) );
-    // }
-
     // Draw points.
     KVS_GL_CALL( glDrawArrays( GL_POINTS, 0, nvertices ) );
 
@@ -450,12 +386,6 @@ void DepthPeelingRenderer::draw( const kvs::PointObject* point_object )
 
     // Disable colors.
     KVS_GL_CALL( glDisableClientState( GL_COLOR_ARRAY ) );
-
-    // // Disable normals.
-    // if ( m_has_normal )
-    // {
-    //     KVS_GL_CALL( glDisableClientState( GL_NORMAL_ARRAY ) );
-    // }
 }
 
 void DepthPeelingRenderer::blend()
