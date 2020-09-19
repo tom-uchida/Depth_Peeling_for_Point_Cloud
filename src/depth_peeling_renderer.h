@@ -47,6 +47,7 @@ private:
     kvs::FrameBufferObject m_framebuffer[3];
     kvs::Texture2D m_color_buffer[3];
     kvs::Texture2D m_depth_buffer[3];
+    std::vector<kvs::Texture2D> m_color_buffer_of_each_layer;
 
 public:
     DepthPeelingRenderer();
@@ -59,6 +60,9 @@ public:
 
     void setLayerLevel( const size_t nlayers ) { m_layer_level = nlayers; }
     void setBackgroundColor( const kvs::RGBColor& color ) { m_background_color = color; }
+
+    size_t getLayerLevel() const { return m_layer_level; }
+    std::vector<kvs::Texture2D> getColorBuffers() const { return m_color_buffer_of_each_layer; }
 
 private:
     void create_shader_program();

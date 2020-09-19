@@ -40,6 +40,7 @@
 
 #include "depth_peeling_renderer.h" // UCHIDA 200902
 #include <kvs/Screen> // UCHIDA 200908
+#include "render_each_layer.h" // UCHIDA 200919
 
 //#define DEBUG_MAIN
 
@@ -96,8 +97,9 @@ int mainsub_spbr_plyascii ( int argc, char** argv )
     renderer->setName( "Depth-Peeling-Rendering" );
 
     // Set layer level
-    std::cout << "Layer Level: " << spbr_engine->layerLevel() << "\n";
-    renderer->setLayerLevel( spbr_engine->layerLevel() );
+    size_t layer_level = spbr_engine->layerLevel();
+    std::cout << "Layer Level: " << layer_level << "\n";
+    renderer->setLayerLevel( layer_level );
 
     // Set Lambert shading or keep Phong shading
     setShadingType ( spbr_engine, renderer ) ;
@@ -129,7 +131,8 @@ int mainsub_spbr_plyascii ( int argc, char** argv )
 
     // Create a screen and register 
     //  the point object and the renderer 
-    kvs::glut::Screen screen( &app );
+    //kvs::glut::Screen screen( &app );
+    local::Screen screen( &app ); // UCHIDA 200919
     screen.registerObject( object, renderer );
 
 
@@ -171,7 +174,7 @@ int mainsub_spbr_plyascii ( int argc, char** argv )
     screen.scene()->mouse()->trackball().setScalingFactor( mouse_zoom_speed );
 
     // Set window title
-    setWindowTitle ( SPBR_WINDOW_TITLE, argv[1], &screen ) ; 
+    setWindowTitle ( SPBR_WINDOW_TITLE, argv[1], &screen ); 
 
     // Add events to the screen
     InitializeEvent  init;
@@ -186,7 +189,7 @@ int mainsub_spbr_plyascii ( int argc, char** argv )
                             screen.scene() );
     screen.addEvent( &timer_event );
 
-    // Display mene in console 
+    // Display menu in console 
     std::cout << "** Executing Depth Peeling Rendering..." << std::endl;
     key.displayMenu();
 

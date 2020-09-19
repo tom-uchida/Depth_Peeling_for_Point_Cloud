@@ -17,3 +17,5 @@ src/*.org
 
 src/spbr_dp
 src/opbr_dp
+
+src/DOC/OpenGL/kvs/

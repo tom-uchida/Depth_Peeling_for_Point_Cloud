@@ -138,6 +138,11 @@ void DepthPeelingRenderer::exec( kvs::ObjectBase* _object, kvs::Camera* _camera,
     for ( size_t i = 0; i < m_layer_level; i++ )
     {
         this->peel_pass( point_object );
+
+        // Save the texture of each layer
+        kvs::Texture2D tmp_tex2D;
+        m_color_buffer_of_each_layer.push_back( tmp_tex2D );
+        m_color_buffer_of_each_layer[i].loadFromFrameBuffer( 0, 0, BaseClass::framebufferWidth(), BaseClass::framebufferHeight() );
     }
     this->finalize_pass();
 
@@ -306,9 +311,6 @@ void DepthPeelingRenderer::initialize_pass()
 void DepthPeelingRenderer::finalize_pass()
 {
     kvs::OpenGL::SetDrawBuffer( GL_BACK );
-    kvs::OpenGL::Enable( GL_BLEND );
-    kvs::OpenGL::SetBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-    KVS_GL_CALL( glBlendEquation( GL_FUNC_ADD ) );
 
     // kvs::Texture::Binder tex0( m_color_buffer[ m_cycle ], 0 );
     kvs::Texture::Binder tex0( m_color_buffer[ 2 ], 0 );
@@ -343,12 +345,12 @@ void DepthPeelingRenderer::peel_pass( const kvs::PointObject* _point_object )
         kvs::OpenGL::SetClearDepth( 1.0 );
         kvs::OpenGL::Clear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 
-        
         kvs::Texture::Binder tex12( m_depth_buffer[back], 12 );
         kvs::Texture::Binder tex13( m_color_buffer[back], 13 );
         this->blend();
     }
-}
+
+} // End of peel_pass()
 
 void DepthPeelingRenderer::draw( const kvs::PointObject* _point_object )
 {
@@ -364,11 +366,9 @@ void DepthPeelingRenderer::draw( const kvs::PointObject* _point_object )
     m_peeling_shader.setUniform( "ModelViewProjectionMatrix", PM );
     m_peeling_shader.setUniform( "NormalMatrix", N );
 
-    const size_t nvertices = _point_object->numberOfVertices();
-    const size_t coord_size = nvertices * 3 * sizeof( kvs::Real32 );
-    // const size_t color_size = nvertices * 4 * sizeof( kvs::UInt8 );
-
-    KVS_GL_CALL( glPolygonMode( GL_FRONT_AND_BACK, GL_FILL ) );
+    const size_t npoints = _point_object->numberOfVertices();
+    const size_t coord_size = npoints * 3 * sizeof( kvs::Real32 );
+    // const size_t color_size = npoints * 4 * sizeof( kvs::UInt8 );
 
     // Enable coords.
     KVS_GL_CALL( glEnableClientState( GL_VERTEX_ARRAY ) );
@@ -379,7 +379,7 @@ void DepthPeelingRenderer::draw( const kvs::PointObject* _point_object )
     KVS_GL_CALL( glColorPointer( 4, GL_UNSIGNED_BYTE, 0, (GLbyte*)NULL + coord_size ) );
 
     // Draw points.
-    KVS_GL_CALL( glDrawArrays( GL_POINTS, 0, nvertices ) );
+    KVS_GL_CALL( glDrawArrays( GL_POINTS, 0, npoints ) );
 
     // Disable coords.
     KVS_GL_CALL( glDisableClientState( GL_VERTEX_ARRAY ) );

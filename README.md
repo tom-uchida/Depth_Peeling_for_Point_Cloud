@@ -11,10 +11,21 @@
 
 ## Usage
 ```
-$ ls .param.spbr
+$ cd SPBR_Depth_Peeling/src
+$ cat .param.spbr
 #/LayerLevel 1
 
 $ ./spbr_dp input.ply
+
+===== Stochastic Point-based Renderer (SPBR) =====
+               Depth Peeling Version
+
+                2020/09/02 (Depth Peeling Version)
+              Tomomasa Uchida
+           Ritsumeikan University
+
+ USAGE : spbr file1.spbr file2.spbr ...
+ HELP  : spbr -h
 ```
 
 ## Visualization Results

@@ -72,6 +72,7 @@ public:
 #if defined AUTO_SNAP_MODE
         kvs::ColorImage snapshot_image;
         snapshot_image = m_scene->camera()->snapshot();
+        m_filename += "_";
         m_filename += m_layer_level;
         m_filename += ".bmp";
         snapshot_image.write(m_filename);
