@@ -58,22 +58,23 @@ public:
     template <typename ShadingType>
     void setShader( const ShadingType shader );
 
-    void setLayerLevel( const size_t nlayers ) { m_layer_level = nlayers; }
-    void setBackgroundColor( const kvs::RGBColor& color ) { m_background_color = color; }
+    void setLayerLevel( const size_t _nlayers ) { m_layer_level = _nlayers; }
+    void setBackgroundColor( const kvs::RGBColor& _color ) { m_background_color = _color; }
 
     size_t getLayerLevel() const { return m_layer_level; }
     std::vector<kvs::Texture2D> getColorBuffers() const { return m_color_buffer_of_each_layer; }
 
 private:
     void create_shader_program();
-    void create_buffer_object( const kvs::PointObject* point_object );
-    void create_framebuffer( const size_t width, const size_t height );
-    void update_framebuffer( const size_t width, const size_t height );
-
+    void create_vbo( const kvs::PointObject* _point_object );
+    void create_framebuffer( const size_t _width, const size_t _height );
+    void update_framebuffer( const size_t _width, const size_t _height );
+    
+    void create_color_buffers_for_each_layer( const size_t _width, const size_t _height );
     void initialize_pass();
     void finalize_pass();
-    void peel_pass( const kvs::PointObject* point_object );
-    void draw( const kvs::PointObject* point_object );
+    void peel_pass( const kvs::PointObject* _point_object, const size_t _index );
+    void draw( const kvs::PointObject* _point_object );
     void blend();
 };
 

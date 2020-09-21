@@ -39,19 +39,18 @@ public:
         // Get the color buffer of each layer
         std::vector<kvs::Texture2D> color_buffers = dp_renderer->getColorBuffers();
 
-        // Draw the color buffer of each layer
+        std::cout << "\nRendering the color buffer of each layer...\n";
         for ( int i = 0; i < color_buffers.size(); i++ ) 
         {
-            kvs::OpenGL::SetDrawBuffer( GL_COLOR_ATTACHMENT0 );
-            kvs::OpenGL::SetClearColor( kvs::Vec4::Zero() );
-            kvs::OpenGL::SetClearDepth( 0.0 );
-            kvs::OpenGL::Clear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
+            // kvs::OpenGL::SetDrawBuffer( GL_COLOR_ATTACHMENT0 );
+            // kvs::OpenGL::SetClearColor( kvs::Vec4::Zero() );
+            // kvs::OpenGL::SetClearDepth( 0.0 );
+            // kvs::OpenGL::Clear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 
-            // kvs::OpenGL::SetDrawBuffer( GL_BACK );
-            kvs::Texture::Binder tex20( color_buffers[i], 20 );
-            DrawRect();
+            // kvs::Texture::Binder tex( color_buffers[i], i );
+            // DrawRect();
 
-            // Save the drawn image
+            // Save the rendered image
             kvs::ColorImage snapshot_image;
             snapshot_image = scene()->camera()->snapshot();
             std::string file_name( "IMAGE_DATA/LAYER_IMAGES/Layer" );
