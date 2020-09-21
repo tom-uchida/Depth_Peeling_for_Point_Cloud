@@ -53,7 +53,7 @@ void glBindTexture(
 ### `glReadPixels()`
 
 #### Description
-- Framebuffer の内容をクライアントメモリへコピーする．
+- Framebuffer の内容をCPU側のメモリに読み込む．
 #### Syntax
 ```
 void glReadPixels(

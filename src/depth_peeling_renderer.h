@@ -5,8 +5,6 @@
 #include <kvs/IndexBufferObject>
 #include <kvs/FrameBufferObject>
 #include <kvs/Texture2D>
-#include <kvs/PolygonObject>
-#include <kvs/PolygonRenderer>
 
 #include <kvs/ParticleBasedRenderer>
 #include <kvs/PointObject>
@@ -62,7 +60,7 @@ public:
     void setBackgroundColor( const kvs::RGBColor& _color ) { m_background_color = _color; }
 
     size_t getLayerLevel() const { return m_layer_level; }
-    std::vector<kvs::Texture2D> getColorBuffers() const { return m_color_buffer_of_each_layer; }
+    std::vector<kvs::Texture2D> getColorBufferOfEachLayer() const { return m_color_buffer_of_each_layer; }
 
 private:
     void create_shader_program();

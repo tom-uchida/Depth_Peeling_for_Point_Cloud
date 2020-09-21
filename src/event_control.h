@@ -77,8 +77,8 @@ public:
         m_filename += ".bmp";
         snapshot_image.write(m_filename);
 
-        std::cout << "\nAutomatically, snapshot." << std::endl;
-        std::cout << "path : " << m_filename << std::endl;
+        std::cout << "\nAutomatically, snapshotted." << std::endl;
+        std::cout << "Saved image path: " << m_filename << std::endl;
         exit(0);
 #endif
     } // End update()

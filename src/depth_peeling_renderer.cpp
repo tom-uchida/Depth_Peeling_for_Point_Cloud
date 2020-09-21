@@ -108,7 +108,7 @@ void DepthPeelingRenderer::exec( kvs::ObjectBase* _object, kvs::Camera* _camera,
         m_height = height;
         m_object = _object;
         this->create_shader_program();
-        this->create_buffer_object( point_object );
+        this->create_vbo( point_object );
         this->create_framebuffer( width, height );
     }
 
@@ -130,19 +130,15 @@ void DepthPeelingRenderer::exec( kvs::ObjectBase* _object, kvs::Camera* _camera,
         m_blending_shader.release();
         m_finalizing_shader.release();
         this->create_shader_program();
-        this->create_buffer_object( point_object );
+        this->create_vbo( point_object );
     }
 
     // Peeling Processing
+    this->create_color_buffers_for_each_layer( m_width, m_height );
     this->initialize_pass();
     for ( size_t i = 0; i < m_layer_level; i++ )
     {
-        this->peel_pass( point_object );
-
-        // Save the texture of each layer
-        kvs::Texture2D tmp_tex2D;
-        m_color_buffer_of_each_layer.push_back( tmp_tex2D );
-        m_color_buffer_of_each_layer[i].loadFromFrameBuffer( 0, 0, BaseClass::framebufferWidth(), BaseClass::framebufferHeight() );
+        this->peel_pass( point_object, i );
     }
     this->finalize_pass();
 
@@ -207,7 +203,7 @@ void DepthPeelingRenderer::create_shader_program()
     }
 } // End of create_shader_program()
 
-void DepthPeelingRenderer::create_buffer_object( const kvs::PointObject* _point_object )
+void DepthPeelingRenderer::create_vbo( const kvs::PointObject* _point_object )
 {
     kvs::ValueArray<kvs::Real32> coords  = _point_object->coords();
     kvs::ValueArray<kvs::UInt8>  colors  = ::VertexColors( _point_object );
@@ -298,6 +294,22 @@ void DepthPeelingRenderer::update_framebuffer( const size_t _width, const size_t
     m_finalizing_shader.unbind();
 } // End of update_framebuffer()
 
+void DepthPeelingRenderer::create_color_buffers_for_each_layer( const size_t _width, const size_t _height )
+{
+    for ( size_t i = 0; i < m_layer_level; i++ )
+    {
+        kvs::Texture2D tex2D;
+        m_color_buffer_of_each_layer.push_back( tex2D );
+
+        m_color_buffer_of_each_layer[i].setWrapS( GL_REPEAT );
+        m_color_buffer_of_each_layer[i].setWrapT( GL_REPEAT );
+        m_color_buffer_of_each_layer[i].setMinFilter( GL_NEAREST );
+        m_color_buffer_of_each_layer[i].setMagFilter( GL_NEAREST );
+        m_color_buffer_of_each_layer[i].setPixelFormat( GL_RGBA32F, GL_RGBA, GL_UNSIGNED_BYTE );
+        m_color_buffer_of_each_layer[i].create( _width, _height );
+    }
+}
+
 void DepthPeelingRenderer::initialize_pass()
 {
     m_cycle = 0;
@@ -310,16 +322,15 @@ void DepthPeelingRenderer::initialize_pass()
 
 void DepthPeelingRenderer::finalize_pass()
 {
-    kvs::OpenGL::SetDrawBuffer( GL_BACK );
-
-    // kvs::Texture::Binder tex0( m_color_buffer[ m_cycle ], 0 );
     kvs::Texture::Binder tex0( m_color_buffer[ 2 ], 0 );
+    // kvs::Texture::Binder tex0( m_depth_buffer[ 2 ], 0 );
+    // kvs::Texture::Binder tex0( m_color_buffer_of_each_layer[0], 0 );
     kvs::ProgramObject::Binder shader( m_finalizing_shader );
     kvs::OpenGL::Disable( GL_DEPTH_TEST );
     ::DrawRect();
 }
 
-void DepthPeelingRenderer::peel_pass( const kvs::PointObject* _point_object )
+void DepthPeelingRenderer::peel_pass( const kvs::PointObject* _point_object, const size_t _index )
 {
     const int front = m_cycle; // 0 or 1
     const int back = 2;
@@ -333,10 +344,20 @@ void DepthPeelingRenderer::peel_pass( const kvs::PointObject* _point_object )
         kvs::OpenGL::SetClearDepth( 1.0 );
         kvs::OpenGL::Clear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 
+        // Assign texture to the framebuffer object
         kvs::Texture::Binder tex10( m_depth_buffer[front], 10 );
         kvs::Texture::Binder tex11( m_color_buffer[front], 11 );
+
+        // Rendering to the framebuffer object (Offscreen Rendering)
         this->draw( _point_object );
     }
+
+    // // Save the color buffer of each layer
+    // if ( m_framebuffer[back].isBound() )
+    // {
+    //     kvs::Texture::Binder tex20( m_color_buffer_of_each_layer[ _index ], 20 );
+    //     m_color_buffer_of_each_layer[ _index ].loadFromFrameBuffer( 0, 0, m_width, m_height );
+    // }
 
     kvs::FrameBufferObject::Binder fbo2( m_framebuffer[target] );
     {
@@ -345,9 +366,19 @@ void DepthPeelingRenderer::peel_pass( const kvs::PointObject* _point_object )
         kvs::OpenGL::SetClearDepth( 1.0 );
         kvs::OpenGL::Clear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 
+        // Assign texture to the framebuffer object
         kvs::Texture::Binder tex12( m_depth_buffer[back], 12 );
         kvs::Texture::Binder tex13( m_color_buffer[back], 13 );
+
+        // Rendering to the framebuffer object (Offscreen Rendering)
         this->blend();
+    }
+
+    // Save the color buffer of each layer
+    if ( m_framebuffer[target].isBound() )
+    {
+        kvs::Texture::Binder tex21( m_color_buffer_of_each_layer[ _index ], 21 );
+        m_color_buffer_of_each_layer[ _index ].loadFromFrameBuffer( 0, 0, m_width, m_height );
     }
 
 } // End of peel_pass()
@@ -392,6 +423,7 @@ void DepthPeelingRenderer::blend()
 {
     kvs::ProgramObject::Binder bind( m_blending_shader );
     kvs::OpenGL::Enable( GL_DEPTH_TEST );
+
     kvs::OpenGL::SetDepthFunc( GL_ALWAYS );
     ::DrawRect();
     // Obtain depth buffer by executing point occlusion effect.

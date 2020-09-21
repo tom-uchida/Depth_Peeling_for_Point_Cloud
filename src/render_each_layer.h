@@ -37,18 +37,18 @@ public:
         local::DepthPeelingRenderer* dp_renderer = local::DepthPeelingRenderer::DownCast( tmp_rb );
 
         // Get the color buffer of each layer
-        std::vector<kvs::Texture2D> color_buffers = dp_renderer->getColorBuffers();
+        std::vector<kvs::Texture2D> color_buffer_of_each_layer = dp_renderer->getColorBufferOfEachLayer();
 
         std::cout << "\nRendering the color buffer of each layer...\n";
-        for ( int i = 0; i < color_buffers.size(); i++ ) 
+        for ( size_t i = 0; i < color_buffer_of_each_layer.size(); i++ ) 
         {
-            // kvs::OpenGL::SetDrawBuffer( GL_COLOR_ATTACHMENT0 );
-            // kvs::OpenGL::SetClearColor( kvs::Vec4::Zero() );
-            // kvs::OpenGL::SetClearDepth( 0.0 );
-            // kvs::OpenGL::Clear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
+            kvs::OpenGL::SetDrawBuffer( GL_COLOR_ATTACHMENT0 );
+            kvs::OpenGL::SetClearColor( kvs::Vec4::Zero() );
+            kvs::OpenGL::SetClearDepth( 0.0 );
+            kvs::OpenGL::Clear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 
-            // kvs::Texture::Binder tex( color_buffers[i], i );
-            // DrawRect();
+            kvs::Texture::Binder tex0( color_buffer_of_each_layer[i], 0 );
+            DrawRect();
 
             // Save the rendered image
             kvs::ColorImage snapshot_image;
