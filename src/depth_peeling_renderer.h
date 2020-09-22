@@ -41,6 +41,7 @@ private:
     kvs::ProgramObject m_peeling_shader; ///< shader program for depth peeling
     kvs::ProgramObject m_blending_shader; ///< shader program for blending
     kvs::ProgramObject m_finalizing_shader; ///< shader program for finalizing
+    kvs::ProgramObject m_render_color_buffer_shader;
 
     kvs::FrameBufferObject m_framebuffer[3];
     kvs::Texture2D m_color_buffer[3];
@@ -71,7 +72,7 @@ private:
     void create_color_buffers_for_each_layer( const size_t _width, const size_t _height );
     void initialize_pass();
     void finalize_pass();
-    void peel_pass( const kvs::PointObject* _point_object, const size_t _index );
+    void peel_pass( const kvs::PointObject* _point_object, const int _index );
     void draw( const kvs::PointObject* _point_object );
     void blend();
 };

@@ -13,10 +13,7 @@ void main()
     vec4 front_color = LookupTexture2D( color_front, index );
     vec4 back_color = LookupTexture2D( color_back, index );
 
-    float tmp_alpha = 1.0 - front_color.a;
-    vec3 color = front_color.rgb + back_color.rgb * tmp_alpha * back_color.a;
-    float alpha = front_color.a + tmp_alpha * back_color.a;
-
-    gl_FragColor = vec4( color, alpha );
+    vec3 color = front_color.rgb + back_color.rgb;
+    gl_FragColor = vec4( color, 1.0 );
     gl_FragDepth = LookupTexture2D( depth_back, index ).r;
 }

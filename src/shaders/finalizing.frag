@@ -12,9 +12,6 @@ void main()
     vec4 front_color = LookupTexture2D( color_buffer, index );
     vec4 back_color = vec4( background_color, 1.0 );
 
-    float tmp_alpha = 1.0 - front_color.a;
-    vec3 color = front_color.rgb + back_color.rgb * tmp_alpha * back_color.a;
-    float alpha = front_color.a + tmp_alpha * back_color.a;
-
-    gl_FragColor = vec4( color, alpha );
+    vec3 color = front_color.rgb + back_color.rgb;
+    gl_FragColor = vec4( color, 1.0 );
 }
