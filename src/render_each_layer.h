@@ -28,32 +28,25 @@ public:
 
     void paintEvent( void )
     {
-        kvs::glut::Screen::paintEvent();
-
-        // Draw the color buffer of each layer
-
         // Get the depth peeling renderer
         kvs::RendererBase* tmp_rb = scene()->rendererManager()->renderer( "Depth-Peeling-Rendering" );
         local::DepthPeelingRenderer* dp_renderer = local::DepthPeelingRenderer::DownCast( tmp_rb );
 
-        // Get the color buffer of each layer
-        std::vector<kvs::Texture2D> color_buffer_of_each_layer = dp_renderer->getColorBufferOfEachLayer();
+        // Get the layer level
+        const size_t layer_level = dp_renderer->getLayerLevel();
 
-        std::cout << "\nRendering the color buffer of each layer...\n";
-        for ( size_t i = 0; i < color_buffer_of_each_layer.size(); i++ ) 
+        std::cout << "\nDoing Depth Peeling " << layer_level << " times..." << std::endl;
+        for ( size_t i = 0; i < layer_level; i++ ) 
         {
-            kvs::OpenGL::SetDrawBuffer( GL_COLOR_ATTACHMENT0 );
-            kvs::OpenGL::SetClearColor( kvs::Vec4::Zero() );
-            kvs::OpenGL::SetClearDepth( 0.0 );
-            kvs::OpenGL::Clear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
+            // Change the layer level
+            dp_renderer->setLayerLevel( i+1 );
 
-            kvs::Texture::Binder tex0( color_buffer_of_each_layer[i], 0 );
-            DrawRect();
+            // Rendering
+            kvs::glut::Screen::paintEvent();
 
-            // Save the rendered image
-            kvs::ColorImage snapshot_image;
-            snapshot_image = scene()->camera()->snapshot();
-            std::string file_name( "IMAGE_DATA/LAYER_IMAGES/Layer" );
+            // Save the current layer image
+            kvs::ColorImage snapshot_image = scene()->camera()->snapshot();
+            std::string file_name( "IMAGE_DATA/LAYER_IMAGES/LayerImage" );
             char three_digits_num[5];
             sprintf( three_digits_num, "%03d", i );
             file_name += three_digits_num;
@@ -61,7 +54,11 @@ public:
             snapshot_image.write( file_name );
         }
 
-        // exit(0);
+        std::cout << "\nAutomatically, snapshotted." << std::endl;
+        std::cout << "Saved image path: IMAGE_DATA/LAYER_IMAGES/LayerImageXXX.bmp" << std::endl;
+
+        // Terminate the program normally
+        exit(0);
     } // end of paintEvent()
 
     void DrawRect()

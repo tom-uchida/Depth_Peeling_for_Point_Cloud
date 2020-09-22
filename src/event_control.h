@@ -44,7 +44,6 @@ const kvs::Vector3f DEFAULT_LIGHT_POSITION (12.0, 12.0, 12.0) ;
 // UCHIDA 2020/09/08
 #include <kvs/TimerEventListener>
 #include <kvs/glut/Timer>
-#define AUTO_SNAP_MODE
 
 //------------------------------------------------------------//
 class TimerEvent : public kvs::TimerEventListener {
@@ -69,7 +68,6 @@ public:
     }
 
     void update( kvs::TimeEvent* event ) {
-#if defined AUTO_SNAP_MODE
         kvs::ColorImage snapshot_image;
         snapshot_image = m_scene->camera()->snapshot();
         m_filename += "_";
@@ -80,7 +78,6 @@ public:
         std::cout << "\nAutomatically, snapshotted." << std::endl;
         std::cout << "Saved image path: " << m_filename << std::endl;
         exit(0);
-#endif
     } // End update()
 
 }; // End TimerEvent class
