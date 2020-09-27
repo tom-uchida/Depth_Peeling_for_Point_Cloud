@@ -25,6 +25,8 @@ const unsigned int DEFAULT_REPEAT_LEVEL     = 1 ;//TANAKA 2017/11/05
 //const unsigned int DEFAULT_REPEAT_LEVEL     = 200 ;//TANAKA 2017/11/05
 //const unsigned int DEFAULT_REPEAT_LEVEL     = 1000 ;//TANAKA 2017/11/05
 
+const unsigned int DEFAULT_LAYER_LEVEL     = 1; //UCHIDA 2020/09/03
+
 const unsigned int DEFAULT_IMAGE_RESOLUTION = 512 ;
 const double       DEFAULT_VIEW_ANGLE       = 45.0 ;
 const unsigned int DEFAULT_GRAY_LEVEL       = 128 ;
@@ -38,6 +40,7 @@ SPBR::SPBR( const char* input_file, PLY_BINARY_FORMAT format_type)  :
     m_viewAngle      ( DEFAULT_VIEW_ANGLE )       ,
     m_flagCameraFar  ( false )                    , 
     m_repeatLevel(DEFAULT_REPEAT_LEVEL)           ,
+    m_layerLevel(DEFAULT_LAYER_LEVEL)             , //UCHIDA 2020/09/03
     m_Rb(DEFAULT_GRAY_LEVEL)                      , 
     m_Gb(DEFAULT_GRAY_LEVEL)                      , 
     m_Bb(DEFAULT_GRAY_LEVEL)                      , 
@@ -128,7 +131,7 @@ SPBR::readPLYHeader_and_countParticles_Binary( void )
   std::cout << (m_flagUseNormals ? "Yes": "No") ;
   std::cout << std::endl;
   std::cout << "**   Repeat level         : " << m_repeatLevel << std::endl;
-
+  std::cout << "**   Layer level          : " << m_layerLevel << std::endl; //UCHIDA 2020/09/03
 } // readPLYHeader_and_countParticles_Binary()
 
 
@@ -396,6 +399,13 @@ SPBR::read_SPBR_ParameterFile_Binary( const char* filename )
             unsigned int repeat_level;
             sscanf ( buf, "%s %u", dummy, &repeat_level );
             this->setRepeatLevel ( repeat_level ) ;
+        } else 
+        // UCHIDA 2020/09/03
+        //----- LayerLevel ----- [OK]
+        if ( !strncmp( buf, LAYER_LEVEL_COMMAND, strlen(LAYER_LEVEL_COMMAND) ) ) { 
+            unsigned int layer_level;
+            sscanf ( buf, "%s %u", dummy, &layer_level );
+            this->setLayerLevel ( layer_level ) ;
         } else 
         //----- WireframeBox ----- [OK]
         if ( !strncmp( buf, WIREFRAME_BOX_COMMAND, strlen(WIREFRAME_BOX_COMMAND) ) ) { 
