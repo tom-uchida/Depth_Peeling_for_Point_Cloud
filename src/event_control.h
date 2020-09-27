@@ -43,7 +43,7 @@ const kvs::Vector3f DEFAULT_LIGHT_POSITION (12.0, 12.0, 12.0) ;
 
 // UCHIDA 2020/09/08
 #include <kvs/TimerEventListener>
-#include <kvs/glut/Timer>
+// #include <kvs/glut/Timer>
 
 //------------------------------------------------------------//
 class TimerEvent : public kvs::TimerEventListener {

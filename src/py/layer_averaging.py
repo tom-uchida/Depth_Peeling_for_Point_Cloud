@@ -43,9 +43,9 @@ def run( _num_of_layers, _image_resol, _serial_img_path ):
         B_pixel_values[:,:,i] = tmp_image_RGB[:,:,2] # B
 
         if i == _num_of_layers-1:
-            print("R :", R_pixel_values.shape)
-            print("G :", G_pixel_values.shape)
-            print("B :", B_pixel_values.shape)
+            print("R: ", R_pixel_values.shape)
+            print("G: ", G_pixel_values.shape)
+            print("B: ", B_pixel_values.shape)
     # end for i
 
     R_mean = np.mean(R_pixel_values, axis=2)

@@ -12,6 +12,7 @@
 // #include <kvs/rendererManager>
 #include "depth_peeling_renderer.h"
 #include <kvs/ColorImage>
+#include <time.h>
 
 namespace local
 {
@@ -35,7 +36,8 @@ public:
         // Get the layer level
         const size_t layer_level = dp_renderer->getLayerLevel();
 
-        std::cout << "\nDoing Depth Peeling " << layer_level << " times..." << std::endl;
+        const clock_t start = clock();
+        std::cout << "\nDoing Depth Peeling " << layer_level << " times...\n";
         for ( size_t i = 0; i < layer_level; i++ ) 
         {
             // Change the layer level
@@ -54,31 +56,14 @@ public:
             snapshot_image.write( file_name );
         }
 
-        std::cout << "\nAutomatically, snapshotted." << std::endl;
-        std::cout << "Saved image path: IMAGE_DATA/LAYER_IMAGES/LayerImageXXX.bmp" << std::endl;
+        const clock_t end = clock();
+        std::cout << "Done! ( " << static_cast<double>(end - start) / CLOCKS_PER_SEC << " [sec] )\n";
 
-        // Terminate the program normally
-        exit(0);
+        std::cout << "\nAutomatically, snapshotted.\n";
+        std::cout << "Saved image path: IMAGE_DATA/LAYER_IMAGES/LayerImageXXX.bmp\n";
+
+        exit(0); // Terminate the program normally
     } // end of paintEvent()
-
-    void DrawRect()
-    {
-        kvs::OpenGL::WithPushedMatrix p1( GL_MODELVIEW );
-        p1.loadIdentity();
-        {
-            kvs::OpenGL::WithPushedMatrix p2( GL_PROJECTION );
-            p2.loadIdentity();
-            {
-                kvs::OpenGL::SetOrtho( 0, 1, 0, 1, -1, 1 );
-                kvs::OpenGL::Begin( GL_QUADS );
-                kvs::OpenGL::TexCoordVertex( kvs::Vec2( 1, 1 ), kvs::Vec2( 1, 1 ) );
-                kvs::OpenGL::TexCoordVertex( kvs::Vec2( 0, 1 ), kvs::Vec2( 0, 1 ) );
-                kvs::OpenGL::TexCoordVertex( kvs::Vec2( 0, 0 ), kvs::Vec2( 0, 0 ) );
-                kvs::OpenGL::TexCoordVertex( kvs::Vec2( 1, 0 ), kvs::Vec2( 1, 0 ) );
-                kvs::OpenGL::End();
-            }
-        }
-    }
 
 }; // end of Screen class
 
