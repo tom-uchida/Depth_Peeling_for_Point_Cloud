@@ -41,8 +41,11 @@
 #include "depth_peeling_renderer.h" // UCHIDA 200902
 #include <kvs/Screen> // UCHIDA 200908
 #include "render_each_layer.h" // UCHIDA 200919
-// #define AUTO_SNAP_MODE
+#include <kvs/Label> // UCHIDA 2020/10/09
+#include <kvs/Font> // UCHIDA 2020/10/09
+#include <kvs/FontMetrics> // UCHIDA 2020/10/09
 
+// #define AUTO_SNAP_MODE
 //#define DEBUG_MAIN
 
 //-----
@@ -98,7 +101,7 @@ int mainsub_spbr_plyascii ( int argc, char** argv )
     renderer->setName( "Depth-Peeling-Rendering" );
 
     // Set layer level
-    size_t layer_level = spbr_engine->layerLevel();
+    const size_t layer_level = spbr_engine->layerLevel();
     std::cout << "Layer Level: " << layer_level << "\n";
     renderer->setLayerLevel( layer_level );
 
@@ -133,10 +136,8 @@ int mainsub_spbr_plyascii ( int argc, char** argv )
     // Create a screen and register 
     //  the point object and the renderer 
     //kvs::glut::Screen screen( &app );
-    local::Screen screen( &app ); // UCHIDA 200919
+    local::Screen screen( &app ); // UCHIDA 2020/09/19
     screen.registerObject( object, renderer );
-
-
 
     // Object rotation (Z==>X) if required
     if ( spbr_engine->isZXRotation() ) {

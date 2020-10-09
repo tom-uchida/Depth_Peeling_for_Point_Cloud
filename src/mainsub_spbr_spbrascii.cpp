@@ -31,6 +31,9 @@
 
 #include "mainfn_utility.h"
 
+#include "depth_peeling_renderer.h" // UCHIDA 200902
+#include <kvs/Screen> // UCHIDA 200908
+#include "render_each_layer.h" // UCHIDA 200919
 
 //#define DEBUG_MAIN
 
@@ -83,14 +86,14 @@ int mainsub_spbr_spbrascii ( int argc, char** argv )
 
   //===== END OF CREATING THE POINT OBJECT =====//
 
-#if KVS_VERSION_MAJOR == 1
-  kvs::glew::rits::ParticleBasedRenderer* renderer = new kvs::glew::rits::ParticleBasedRenderer();//KVS1
-#elif KVS_VERSION_MAJOR == 2
-  kvs::glsl::ParticleBasedRenderer* renderer = new kvs::glsl::ParticleBasedRenderer();//KVS2
-#endif
+    // Generate depth peeling renderer
+    local::DepthPeelingRenderer* renderer = new local::DepthPeelingRenderer();
+    renderer->setName( "Depth-Peeling-Rendering" );
 
-  // Set repeat level
-  renderer->setRepetitionLevel ( spbr_engine->repeatLevel()   );
+    // Set layer level
+    const size_t layer_level = spbr_engine->layerLevel();
+    std::cout << "Layer Level: " << layer_level << "\n";
+    renderer->setLayerLevel( layer_level );
 
   // Set Lambert shading or keep Phong shading
   setShadingType ( spbr_engine, renderer ) ;
@@ -120,10 +123,11 @@ int mainsub_spbr_spbrascii ( int argc, char** argv )
     renderer->disableShuffle ();
   }
 
-  // Create a screen and register 
-  //  the point object and the renderer 
-  kvs::glut::Screen screen( &app );
-  screen.registerObject( object, renderer );
+    // Create a screen and register 
+    //  the point object and the renderer 
+    //kvs::glut::Screen screen( &app );
+    local::Screen screen( &app );
+    screen.registerObject( object, renderer );
 
   // Object rotation (Z==>X) if required
   if ( spbr_engine->isZXRotation() ) {
@@ -183,7 +187,7 @@ int mainsub_spbr_spbrascii ( int argc, char** argv )
 
   // Draw FPS count inside the view window
   //  Revise and moved here to use kvs::Label
-  drawFPS ( spbr_engine, &screen );//draw FPSLabel
+//   drawFPS ( spbr_engine, &screen );//draw FPSLabel
 
   // Start
   return( app.run() );

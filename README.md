@@ -1,7 +1,11 @@
 # SPBR_Depth_Peeling
 
 ## Visualization Results
-<img src="figures/LayerLevel1-90.gif">
+<!-- <img src="figures/LayerLevel1-90.gif"> -->
+
+|1%|5%|10%|25%|
+|:-:|:-:|:-:|:-:|
+|<img src="figures/atago_gif/atago_1per_slow.gif">|<img src="figures/atago_gif/atago_5per_slow.gif">|<img src="figures/atago_gif/atago_10per_slow.gif">|<img src="figures/atago_gif/atago_25per_slow.gif">|
 
 ## New Command
 ```
@@ -52,7 +56,7 @@ Saved image path: IMAGE_DATA/LAYER_IMAGES/LayerImageXXX.bmp
 |:-:|:-:|:-:|
 |<img src="figures/LayerLevel80.bmp">|<img src="figures/LayerLevel90.bmp">|<img src="figures/LayerLevel100.bmp">| -->
 
-## Layer Image Averaging
+<!-- ## Layer Image Averaging
 |Original|Layer1-5|Layer1-10|
 |:-:|:-:|:-:|
-|<img src="figures/LayerAvg/original.bmp">|<img src="figures/LayerAvg/Layer_Averaging_L1-5.png">|<img src="figures/LayerAvg/Layer_Averaging_L1-10.png">|
+|<img src="figures/LayerAvg/original.bmp">|<img src="figures/LayerAvg/Layer_Averaging_L1-5.png">|<img src="figures/LayerAvg/Layer_Averaging_L1-10.png">| -->

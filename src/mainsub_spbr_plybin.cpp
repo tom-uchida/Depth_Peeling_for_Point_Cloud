@@ -34,8 +34,8 @@
 #include "depth_peeling_renderer.h" // UCHIDA 200902
 #include <kvs/Screen> // UCHIDA 200908
 #include "render_each_layer.h" // UCHIDA 200919
-// #define AUTO_SNAP_MODE
 
+// #define AUTO_SNAP_MODE
 //#define DEBUG_MAIN
 
 //-----
@@ -128,7 +128,7 @@ int mainsub_spbr_plybin ( int argc, char** argv )
     // Create a screen and register 
     //  the point object and the renderer 
     //kvs::glut::Screen screen( &app );
-    local::Screen screen( &app ); // UCHIDA 200919
+    local::Screen screen( &app );
     screen.registerObject( object, renderer );
 
     // Object rotation (Z==>X) if required

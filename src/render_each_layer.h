@@ -9,23 +9,42 @@
 #include <kvs/OpenGL>
 #include "GLdef.h"
 
-// #include <kvs/rendererManager>
 #include "depth_peeling_renderer.h"
 #include <kvs/ColorImage>
 #include <time.h>
 
+#include <kvs/Label>
+#include <kvs/Font>
+#include <kvs/FontMetrics>
+
 namespace local
 {
 
-class Screen : public kvs::glut::Screen
+class Screen : public kvs::Screen
 {
-
 private:
+    kvs::Label  m_label;
+    kvs::Font   m_font;
 
 public:
-    Screen( kvs::glut::Application* _application ):
-        kvs::glut::Screen( _application )
-    {};
+    Screen( kvs::glut::Application* _app ):
+        kvs::Screen( _app ),
+        m_label( this )
+    {
+        const int screen_width  = this->width();
+        const int screen_height = this->height();
+        m_label.setX( screen_width  * 0.3f );
+        m_label.setY( screen_height * 0.2f );
+        // m_label.setBackgroundColor( kvs::UIColor::Fill() );
+
+        m_font.setFamilyToSans();
+        m_font.setStyleToBold();
+        m_font.setEnabledShadow( true );
+        m_font.setShadowDistance( 5.0f );
+        m_font.setShadowBlur( 3.0f );
+        m_font.setSize( screen_width * 0.1f );
+        m_font.setColor( kvs::RGBColor::White() );
+    };
 
     void paintEvent( void )
     {
@@ -36,34 +55,58 @@ public:
         // Get the layer level
         const size_t layer_level = dp_renderer->getLayerLevel();
 
+        // Do "Depth Peeling"
         const clock_t start = clock();
         std::cout << "\nDoing Depth Peeling " << layer_level << " times...\n";
         for ( size_t i = 0; i < layer_level; i++ ) 
         {
-            // Change the layer level
-            dp_renderer->setLayerLevel( i+1 );
+            const size_t current_layer = i + 1;
+
+            // Set the current layer level
+            dp_renderer->setLayerLevel( current_layer );
+
+            // Draw label
+            drawLabel( current_layer );
 
             // Rendering
             kvs::glut::Screen::paintEvent();
 
             // Save the current layer image
-            kvs::ColorImage snapshot_image = scene()->camera()->snapshot();
-            std::string file_name( "IMAGE_DATA/LAYER_IMAGES/LayerImage" );
-            char three_digits_num[5];
-            sprintf( three_digits_num, "%03d", i );
-            file_name += three_digits_num;
-            file_name += ".bmp";
-            snapshot_image.write( file_name );
+            saveImage( current_layer );
         }
 
         const clock_t end = clock();
-        std::cout << "Done! ( " << static_cast<double>(end - start) / CLOCKS_PER_SEC << " [sec] )\n";
+        std::cout << "Done! ( " << static_cast<double>( end - start ) / CLOCKS_PER_SEC << " [sec] )\n";
 
         std::cout << "\nAutomatically, snapshotted.\n";
         std::cout << "Saved image path: IMAGE_DATA/LAYER_IMAGES/LayerImageXXX.bmp\n";
 
         exit(0); // Terminate the program normally
     } // end of paintEvent()
+
+    inline void drawLabel( const size_t _current_layer )
+    {
+        std::stringstream ss;
+        ss << _current_layer;
+        m_label.setText( ( "Layer: " + ss.str() ).c_str() );
+
+        m_label.setFont( m_font );
+        // m_label.setMargin( 10 );
+        m_label.show();
+    } // end of setLabel()
+
+    inline void saveImage( const size_t _current_layer )
+    {
+        const kvs::ColorImage snapshot_image = scene()->camera()->snapshot();
+
+        std::string file_name( "IMAGE_DATA/LAYER_IMAGES/LayerImage" );
+        char three_digits_num[5];
+        sprintf( three_digits_num, "%03d", static_cast<int>( _current_layer ) );
+        file_name += three_digits_num;
+        file_name += ".bmp";
+
+        snapshot_image.write( file_name );
+    } // end of saveImage()
 
 }; // end of Screen class
 
