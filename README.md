@@ -3,9 +3,13 @@
 ## Visualization Results
 <!-- <img src="figures/LayerLevel1-90.gif"> -->
 
-|1%|5%|10%|25%|
-|:-:|:-:|:-:|:-:|
-|<img src="figures/atago_gif/atago_1per_slow.gif">|<img src="figures/atago_gif/atago_5per_slow.gif">|<img src="figures/atago_gif/atago_10per_slow.gif">|<img src="figures/atago_gif/atago_25per_slow.gif">|
+|1%|5%|
+|:-:|:-:|
+|<img src="figures/atago_gif/atago_1per_slow.gif">|<img src="figures/atago_gif/atago_5per_slow.gif">|
+
+|10%|25%|
+|:-:|:-:|
+|<img src="figures/atago_gif/atago_10per_slow.gif">|<img src="figures/atago_gif/atago_25per_slow.gif">|
 
 ## New Command
 ```
