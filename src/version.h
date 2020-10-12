@@ -14,7 +14,7 @@ const char OPBR_APP_TITLE    [] = "===== Opaque Point-based Renderer (OPBR) ====
 const char SOPBR_VERSION [] = "Depth Peeling Version";
 
 //----- DATE
-const char DATE          [] = "2020/09/02 (Depth Peeling Version)";
+const char DATE          [] = "2020/09/02";
 
 //----- AUTHOR and INSTITUTE
 const char AUTHOR       [] = "              Tomomasa Uchida";

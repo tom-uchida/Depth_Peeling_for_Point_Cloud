@@ -13,7 +13,7 @@ inline void displayOPBR_OpeningMessage ( std::ostream& out = std::cout )
 {
   std::cout << std::endl;
   std::cout << OPBR_APP_TITLE << std::endl;
-  std::cout << "               "  << SOPBR_VERSION << std::endl;
+  std::cout << "            "  << SOPBR_VERSION << std::endl;
   std::cout << std::endl;
   std::cout << "                " << DATE << std::endl;
   std::cout << AUTHOR << std::endl;
