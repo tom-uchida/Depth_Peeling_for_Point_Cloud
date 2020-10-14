@@ -26,6 +26,8 @@ const double       DEFAULT_VIEW_ANGLE       = 45.0 ;
 const unsigned int DEFAULT_GRAY_LEVEL       = 128 ;
 const unsigned int DEFAULT_BG_GRAY_LEVEL    = 255 ;
 
+const unsigned int DEFAULT_LAYER_LEVEL      = 1; // UCHIDA 2020/10/15
+
 
 //-----
 SPBR::SPBR( const char* input_file, SPBR_ASCII_FORMAT file_format )  : 
@@ -34,6 +36,7 @@ SPBR::SPBR( const char* input_file, SPBR_ASCII_FORMAT file_format )  :
     m_viewAngle      ( DEFAULT_VIEW_ANGLE )       ,
     m_flagCameraFar  ( false )                    , 
     m_repeatLevel(DEFAULT_REPEAT_LEVEL)           ,
+    m_layerLevel(DEFAULT_LAYER_LEVEL)             , // UCHIDA 2020/10/15
     m_Rb(DEFAULT_GRAY_LEVEL)                      , 
     m_Gb(DEFAULT_GRAY_LEVEL)                      , 
     m_Bb(DEFAULT_GRAY_LEVEL)                      , 
@@ -216,6 +219,13 @@ SPBR::readHeader_and_countParticles ( void )
             sscanf ( buf, "%s %u", dummy, &repeat_level );
             this->setRepeatLevel ( repeat_level ) ;
         } else 
+        // UCHIDA 2020/10/15
+        //----- LayerLevel -----
+        if ( !strncmp( buf, LAYER_LEVEL_COMMAND, strlen(LAYER_LEVEL_COMMAND) ) ) { 
+            unsigned int layer_level;
+            sscanf ( buf, "%s %u", dummy, &layer_level );
+            this->setLayerLevel ( layer_level ) ;
+        } else
         //----- WireframeBox -----
         if ( !strncmp( buf, WIREFRAME_BOX_COMMAND, strlen(WIREFRAME_BOX_COMMAND) ) ) { 
           double xmin, ymin, zmin, xmax, ymax, zmax ;
@@ -423,6 +433,7 @@ SPBR::readHeader_and_countParticles ( void )
   std::cout << (m_flagUseNormals ? "Yes": "No") ;
   std::cout << std::endl;
   std::cout << "**   Repeat level         : " << m_repeatLevel << std::endl;
+  std::cout << "**   Layer level          : " << m_layerLevel << std::endl; // UCHIDA 2020/10/15
 
 } // readHeader_and_countParticles()
 
