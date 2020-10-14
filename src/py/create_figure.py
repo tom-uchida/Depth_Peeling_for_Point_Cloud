@@ -10,7 +10,7 @@ plt.style.use('bmh')
 plt.rcParams["mathtext.fontset"] = "cm"
 plt.rcParams["mathtext.rm"] = "Times New Roman"
 plt.rcParams["font.size"] = 14
-plt.figure( figsize=(8,6) )
+plt.figure( figsize=(8, 4) )
 
 # Check arguments
 import sys
@@ -38,14 +38,15 @@ Layer, mean_LayerAvg, std_LayerAvg = Layer_mean_std[:,0], Layer_mean_std[:,1], L
 plt.scatter( Layer, mean_LayerAvg, color='#24217D', label='mean(LayerAvg.)', marker="o" )
 plt.scatter( L, mean_SPBR, color='red', label='mean(SPBR)', marker="o" )
 
-plt.scatter( Layer, std_LayerAvg, color='#24217D', label='std(LayerAvg.)', marker="^" )
-plt.scatter( L, std_SPBR, color='red', label='std(SPBR)', marker="^" )
+# plt.scatter( Layer, std_LayerAvg, color='#24217D', label='std(LayerAvg.)', marker="^" )
+# plt.scatter( L, std_SPBR, color='red', label='std(SPBR)', marker="^" )
 
-plt.legend( fontsize=14 )
-plt.xlabel( 'The number of averaged images', fontsize=14 )
-plt.ylabel( 'Pixel Value', fontsize=14 )
+plt.legend( loc='lower left', fontsize=14 )
+plt.xlabel( 'The number of averaged images', fontsize=16 )
+plt.ylabel( 'Pixel Value', fontsize=16 )
 plt.xticks( [1, 20, 40, 60, 80, 100], fontsize=14 )
 plt.yticks( [1, 20, 40, 60, 80, 100], fontsize=14 )
+# plt.yticks( [1, 50, 100, 150, 200, 250], fontsize=14 )
 
 # plt.grid()
 plt.show()
