@@ -17,7 +17,7 @@
 #include <kvs/Font>
 #include <kvs/FontMetrics>
 
-// #define DRAW_LABEL
+#define DRAW_LABEL
 
 namespace local
 {

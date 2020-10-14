@@ -1,8 +1,12 @@
 # SPBR_Depth_Peeling
 
-## Visualization Results
-<!-- <img src="figures/LayerLevel1-90.gif"> -->
+## Peeling Process
+### Noise Point Clouds
+|Gaussian noise (10%)|Outlier noise (5%)|
+|:-:|:-:|
+|<img src="figures/funehoko_gif/funehoko-gaussian-10per.gif">|<img src="figures/funehoko_gif/funehoko-outlier-10per.gif">|
 
+### Various Number of Points
 |400,000 points (1%)|2,000,000 points (5%)|
 |:-:|:-:|
 |<img src="figures/atago_gif/atago_1per_slow.gif">|<img src="figures/atago_gif/atago_5per_slow.gif">|
