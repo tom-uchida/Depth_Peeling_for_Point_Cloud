@@ -2,7 +2,7 @@
 
 ## Peeling Process
 ### Noise Point Clouds
-|Gaussian noise (10%)|Outlier noise (5%)|
+|Gaussian noise (10%)|Outlier noise (10%)|
 |:-:|:-:|
 |<img src="figures/funehoko_gif/funehoko-gaussian-10per.gif">|<img src="figures/funehoko_gif/funehoko-outlier-10per.gif">|
 
