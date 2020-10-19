@@ -94,6 +94,9 @@ int mainsub_spbr_spbrbin ( int argc, char** argv )
     std::cout << "Layer Level: " << layer_level << "\n";
     renderer->setLayerLevel( layer_level );
 
+    // Set background color
+    renderer->setBackgroundColor( spbr_engine->backGroundColor() );
+
   // Set Lambert shading or keep Phong shading
   setShadingType ( spbr_engine, renderer ) ;
 
@@ -152,11 +155,7 @@ int mainsub_spbr_spbrbin ( int argc, char** argv )
   displayParticleSize ( spbr_engine, &screen ); 
 
   // Set background color
-#if KVS_VERSION_MAJOR == 1
-  screen.background()->setColor( spbr_engine->backGroundColor() );//KVS1   
-#elif KVS_VERSION_MAJOR == 2
   screen.setBackgroundColor( spbr_engine->backGroundColor() );//KVS2
-#endif
 
   // Mouse rotation speed //ROTSPEED
   double mouse_rot_speed = spbr_engine->mouseRotSpeed(); // get scaling factor 

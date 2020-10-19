@@ -105,6 +105,9 @@ int mainsub_spbr_plyascii ( int argc, char** argv )
     std::cout << "Layer Level: " << layer_level << "\n";
     renderer->setLayerLevel( layer_level );
 
+    // Set background color
+    renderer->setBackgroundColor( spbr_engine->backGroundColor() );
+
     // Set Lambert shading or keep Phong shading
     setShadingType ( spbr_engine, renderer ) ;
 

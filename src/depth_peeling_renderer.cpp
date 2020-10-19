@@ -74,7 +74,8 @@ DepthPeelingRenderer::DepthPeelingRenderer():
     m_height( 0 ),
     m_object( NULL ),
     m_shader( NULL ),
-    m_layer_level( 1 )
+    m_layer_level( 1 ),
+    m_background_color( kvs::RGBColor( 0, 0, 0 ) )
 {
     // kvs::glsl::ParticleBasedRenderer : public kvs::StochasticRendererBase
     // kvs::StochasticRendererBase : public kvs::RendererBase
