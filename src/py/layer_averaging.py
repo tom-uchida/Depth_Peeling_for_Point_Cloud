@@ -32,20 +32,20 @@ def run( _num_of_layers, _image_resol, _serial_img_path ):
     G_pixel_values = np.empty( ( _image_resol*1, _image_resol*1, _num_of_layers ), np.uint8 )
     B_pixel_values = np.empty( ( _image_resol*1, _image_resol*1, _num_of_layers ), np.uint8 )
 
-    # Read intermediate images
+    # Read the layer images
     for i in range( _num_of_layers ):
         # Read each ensemble image
-        tmp_image_RGB = ReadImage( _serial_img_path + "LayerImage"+str(i+1)+".bmp" )
+        tmp_image_RGB = ReadImage( _serial_img_path + "LayerImage" + str( i + 1 ) + ".bmp" )
 
         # Split into RGB and add to numpy array
         R_pixel_values[:,:,i] = tmp_image_RGB[:,:,0] # R
         G_pixel_values[:,:,i] = tmp_image_RGB[:,:,1] # G
         B_pixel_values[:,:,i] = tmp_image_RGB[:,:,2] # B
 
-        if i == _num_of_layers-1:
-            print( "R: ", R_pixel_values.shape )
-            print( "G: ", G_pixel_values.shape )
-            print( "B: ", B_pixel_values.shape )
+        if i == _num_of_layers - 1:
+            print( "R: {}".format( R_pixel_values.shape ) )
+            print( "G: {}".format( G_pixel_values.shape ) )
+            print( "B: {}".format( B_pixel_values.shape ) )
     # end for i
 
     R_mean = np.mean( R_pixel_values, axis=2 )
@@ -64,7 +64,7 @@ def run( _num_of_layers, _image_resol, _serial_img_path ):
     # Save the result image
     RGB_mean_BGR = cv2.cvtColor( RGB_mean, cv2.COLOR_RGB2BGR )
     
-    cv2.imwrite( _serial_img_path + "Layer_Averaging_" + str(_num_of_layers) + ".png", RGB_mean_BGR )
+    cv2.imwrite( _serial_img_path + "Layer_Averaging_" + str( _num_of_layers ) + ".png", RGB_mean_BGR )
 
 
 

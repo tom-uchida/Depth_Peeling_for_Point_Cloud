@@ -32,10 +32,10 @@ def run( _num_of_layers, _image_resol, _serial_img_path ):
     G_pixel_values = np.empty( (_image_resol*1, _image_resol*1, _num_of_layers), dtype=np.float32 )
     B_pixel_values = np.empty( (_image_resol*1, _image_resol*1, _num_of_layers), dtype=np.float32 )
 
-    # Read intermediate images
+    # Read the layer images
     for i in range( _num_of_layers ):
         # Read each ensemble image
-        tmp_image_RGB = ReadImage( _serial_img_path + "LayerLevel"+str(i+1)+".bmp" )
+        tmp_image_RGB = ReadImage( _serial_img_path + "LayerLevel" + str( i + 1 ) + ".bmp" )
 
         # Split into RGB and add to numpy array
         R_pixel_values[:,:,i] = tmp_image_RGB[:,:,0] # R
@@ -43,9 +43,9 @@ def run( _num_of_layers, _image_resol, _serial_img_path ):
         B_pixel_values[:,:,i] = tmp_image_RGB[:,:,2] # B
 
         if i == _num_of_layers-1:
-            print("R: ", R_pixel_values.shape)
-            print("G: ", G_pixel_values.shape)
-            print("B: ", B_pixel_values.shape)
+            print( "R: {}".format( R_pixel_values.shape ) )
+            print( "G: {}".format( G_pixel_values.shape ) )
+            print( "B: {}".format( B_pixel_values.shape ) )
     # end for i
 
 
@@ -73,29 +73,29 @@ def run( _num_of_layers, _image_resol, _serial_img_path ):
     # print( "weighted_averaged_R: {}".format(weighted_averaged_R[:10, :10, 0]) )
 
     # Convert float32 to uint8
-    weighted_averaged_R = weighted_averaged_R.astype(np.uint8)
-    weighted_averaged_G = weighted_averaged_G.astype(np.uint8)
-    weighted_averaged_B = weighted_averaged_B.astype(np.uint8)
+    weighted_averaged_R = weighted_averaged_R.astype( np.uint8 )
+    weighted_averaged_G = weighted_averaged_G.astype( np.uint8 )
+    weighted_averaged_B = weighted_averaged_B.astype( np.uint8 )
 
     # Combine R, G and B arrays
     # (3, 1000, 1000) → (1000, 1000, 3)
     # (0,    1,    2) → (   1,    2, 0)
-    weighted_averaged_RGB = np.array([weighted_averaged_R, weighted_averaged_G, weighted_averaged_B]).transpose((1, 2, 0))
+    weighted_averaged_RGB = np.array( [weighted_averaged_R, weighted_averaged_G, weighted_averaged_B] ).transpose((1, 2, 0))
     
     # Save the result image
-    weighted_averaged_BGR = cv2.cvtColor(weighted_averaged_RGB, cv2.COLOR_RGB2BGR)
-    cv2.imwrite("./Weighted_Layer_Averaging.png", weighted_averaged_BGR)
+    weighted_averaged_BGR = cv2.cvtColor( weighted_averaged_RGB, cv2.COLOR_RGB2BGR )
+    cv2.imwrite( "./Weighted_Layer_Averaging.png", weighted_averaged_BGR )
 
 
 
 if __name__ == "__main__":
     # Set the number of layers
-    num_of_layers = int(args[2])
-    print("Number of Layers :", num_of_layers)
+    num_of_layers = int( args[2] )
+    print( "Number of Layers : {}".format( num_of_layers ) )
 
     # Set image resolution
-    image_resol = int(args[3])
-    print("Image Resolution :", image_resol)
+    image_resol = int( args[3] )
+    print( "Image Resolution : {}".format( image_resol ) )
 
     # Read target images
     layer_img_path = args[1] + "/"

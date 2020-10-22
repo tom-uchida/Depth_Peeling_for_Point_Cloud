@@ -17,7 +17,7 @@
 #include <kvs/Font>
 #include <kvs/FontMetrics>
 
-#define DRAW_LABEL
+// #define DRAW_LABEL
 
 namespace local
 {
@@ -42,9 +42,9 @@ public:
 
         m_font.setFamilyToSans();
         m_font.setStyleToBold();
-        m_font.setEnabledShadow( true );
-        m_font.setShadowDistance( 5.0f );
-        m_font.setShadowBlur( 3.0f );
+        // m_font.setEnabledShadow( true );
+        // m_font.setShadowDistance( 5.0f );
+        // m_font.setShadowBlur( 3.0f );
         m_font.setSize( screen_width * 0.1f );
         m_font.setColor( kvs::RGBColor::White() );
 #endif
