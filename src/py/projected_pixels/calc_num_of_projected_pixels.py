@@ -1,4 +1,4 @@
-# calc_num_of_effective_pixels.py
+# calc_num_of_projected_pixels.py
 #   Tomomasa Uchida
 #   2020/10/22
 
@@ -10,8 +10,8 @@ import pandas as pd
 import sys
 args = sys.argv
 if len(args) != 4:
-    print("\nUSAGE   : $ python calc_num_of_effective_pixels.py [input_images_path] [num_of_layers] [image_resolution]")
-    print("EXAMPLE : $ python calc_num_of_effective_pixels.py ../IMAGE_DATA 10 1000\n")
+    print("\nUSAGE   : $ python calc_num_of_projected_pixels.py [input_images_path] [num_of_layers] [image_resolution]")
+    print("EXAMPLE : $ python calc_num_of_projected_pixels.py ../IMAGE_DATA 10 1000\n")
     sys.exit()
 
 
@@ -33,7 +33,7 @@ def run( _num_of_layers, _image_resol, _serial_img_path ):
     df = pd.DataFrame( np.zeros(_num_of_layers*nCol).reshape(_num_of_layers, nCol) )
     df.columns = ['Layer', 'nPixels']
 
-    sum_of_effective_pixels = 0
+    sum_of_projected_pixels = 0
     for i in range( _num_of_layers ):
         # Read each layer image
         image_RGB = ReadImage( _serial_img_path + "LayerImage" + str( i + 1 ) + ".bmp" )
@@ -44,19 +44,19 @@ def run( _num_of_layers, _image_resol, _serial_img_path ):
         # Exclude background color pixels
         image_Gray_non_BGColor = image_Gray[image_Gray != 0]
 
-        # Count effective pixels
-        effective_pixels = image_Gray_non_BGColor.shape[0]
-        sum_of_effective_pixels += effective_pixels
+        # Count projected pixels
+        projected_pixels = image_Gray_non_BGColor.shape[0]
+        sum_of_projected_pixels += projected_pixels
 
         # Add to dataframe
         df.at[i, 'Layer']   = i + 1
-        df.at[i, 'nPixels'] = effective_pixels
+        df.at[i, 'nPixels'] = projected_pixels
     # end for
     
     # Write to csv file
-    df.to_csv( '/Users/uchidatomomasa/work/SPBR/myProject/SPBR_Depth_Peeling/src/py/csv/Layer_Num-of-Effective-Pixels.csv', sep=",", index=False, header=True )
+    df.to_csv( '/Users/uchidatomomasa/work/SPBR/myProject/SPBR_Depth_Peeling/src/py/csv/Layer_Num-of-Projected-Pixels.csv', sep=",", index=False, header=True )
 
-    # print( "The number of effective pixels: {}".format( sum_of_effective_pixels ) )
+    # print( "The number of projected pixels: {}".format( sum_of_projected_pixels ) )
     # print( "\ndf: {}".format( df ) )
 # end run()
 
