@@ -1,4 +1,4 @@
-# layer_averaging.py
+# layer_image_averaging.py
 #   Tomomasa Uchida
 #   2020/08/29
 
@@ -9,8 +9,8 @@ import cv2
 import sys
 args = sys.argv
 if len(args) != 4:
-    print("\nUSAGE   : $ python layer_averaging.py [input_images_path] [num_of_layers] [image_resolution]")
-    print("EXAMPLE : $ python layer_averaging.py ../IMAGE_DATA/LAYER_IMAGE 10 1000\n")
+    print("\nUSAGE   : $ python {} [input_images_path] [num_of_layers] [image_resolution]".format(args[0]))
+    print("EXAMPLE : $ python {} ../IMAGE_DATA/LAYER_IMAGE 10 1000\n".format(args[0]))
     sys.exit()
 
 

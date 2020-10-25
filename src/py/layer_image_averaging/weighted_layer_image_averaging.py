@@ -1,4 +1,4 @@
-# weighted_layer_averaging.py
+# weighted_layer_image_averaging.py
 #   Tomomasa Uchida
 #   2020/09/27
 
@@ -9,8 +9,8 @@ import cv2
 import sys
 args = sys.argv
 if len(args) != 4:
-    print("\nUSAGE   : $ python weighted_layer_averaging.py [input_images_path] [num_of_layers] [image_resolution]")
-    print("EXAMPLE : $ python weighted_layer_averaging.py ../IMAGE_DATA 10 1000\n")
+    print("\nUSAGE   : $ python {} [input_images_path] [num_of_layers] [image_resolution]".format(args[0]))
+    print("EXAMPLE : $ python {} ../IMAGE_DATA 10 1000\n".format(args[0]))
     sys.exit()
 
 
@@ -34,7 +34,7 @@ def run( _num_of_layers, _image_resol, _serial_img_path ):
 
     # Read the layer images
     for i in range( _num_of_layers ):
-        # Read each ensemble image
+        # Read each layer image
         tmp_image_RGB = ReadImage( _serial_img_path + "LayerLevel" + str( i + 1 ) + ".bmp" )
 
         # Split into RGB and add to numpy array
@@ -46,7 +46,7 @@ def run( _num_of_layers, _image_resol, _serial_img_path ):
             print( "R: {}".format( R_pixel_values.shape ) )
             print( "G: {}".format( G_pixel_values.shape ) )
             print( "B: {}".format( B_pixel_values.shape ) )
-    # end for i
+    # end for
 
 
     # Prepare empty numpy array
