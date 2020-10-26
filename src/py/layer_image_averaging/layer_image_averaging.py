@@ -64,7 +64,7 @@ def run( _num_of_layers, _image_resol, _serial_img_path ):
     # Save the result image
     RGB_mean_BGR = cv2.cvtColor( RGB_mean, cv2.COLOR_RGB2BGR )
     
-    cv2.imwrite( _serial_img_path + "Layer_Averaging_" + str( _num_of_layers ) + ".png", RGB_mean_BGR )
+    cv2.imwrite( _serial_img_path + "Layer_Averaged_Image_" + str( _num_of_layers ) + ".png", RGB_mean_BGR )
 
 
 
