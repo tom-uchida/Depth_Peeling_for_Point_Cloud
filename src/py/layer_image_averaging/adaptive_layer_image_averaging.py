@@ -68,9 +68,9 @@ def is_this_pixel_noise( _target_pixel_RGB, _reference_image_RGB ):
     r1, r2 = _target_pixel_RGB[0], _reference_image_RGB[0]
     g1, g2 = _target_pixel_RGB[1], _reference_image_RGB[1]
     b1, b2 = _target_pixel_RGB[2], _reference_image_RGB[2]
-    color_distance = np.sqrt( (r1-r2)**2 + (g1-g2)**2 + (b1-b2)**2 )
+    color_distance2 = (r1-r2)**2 + (g1-g2)**2 + (b1-b2)**2
 
-    if color_distance >= COLOR_DISTANCE_THRESHOLD_FOR_NOISE:
+    if color_distance2 >= COLOR_DISTANCE_THRESHOLD_FOR_NOISE**2:
         is_noise_pixel = True
 
     return is_noise_pixel
@@ -124,9 +124,6 @@ def average_layer_images():
                 B_avg_pixel_value = round( np.sum( B_pixel_values ) / B_pixel_values.size )
             else:
                 R_avg_pixel_value, G_avg_pixel_value, B_avg_pixel_value = 0, 0, 0
-
-            # if (x == 250 and y == 250) or (x == 500 and y == 500) or (x == 750 and y == 750):
-            #     print( "**  ({}, {}) = ({}, {}, {})".format( x, y, R_avg_pixel_value, G_avg_pixel_value, B_avg_pixel_value ) )
 
             # Create output image
             layer_averaged_image[y,x,0] = R_avg_pixel_value
