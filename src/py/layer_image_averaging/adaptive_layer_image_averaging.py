@@ -6,6 +6,15 @@ import numpy as np
 import cv2
 import time
 from matplotlib import pyplot as plt
+from matplotlib import cycler
+import matplotlib.gridspec as gridspec
+
+# Plot settings
+plt.style.use('bmh')
+colors = cycler('color', ['#EE6666', '#3388BB', '#9988DD', '#EECC55', '#88BB44', '#FFBBBB'])
+plt.rc('axes', facecolor='#E6E6E6', edgecolor='none', axisbelow=True, grid=False, prop_cycle=colors)
+plt.rcParams["mathtext.fontset"] = "cm"
+plt.rcParams["mathtext.rm"] = "Times New Roman"
 
 # Check arguments
 import sys
@@ -16,12 +25,17 @@ if len(args) != 4:
     sys.exit()
 
 def create_empty_2d_array_uint8():
-    empty_2d_array_uint8 = np.empty( ( image_resol, image_resol ), dtype=np.uint8 )
+    empty_2d_array_uint8   = np.empty( ( image_resol, image_resol ), dtype=np.uint8 )
 
     return empty_2d_array_uint8
 
+def create_empty_2d_array_uint16():
+    empty_2d_array_uint16  = np.empty( ( image_resol, image_resol ), dtype=np.uint16 )
+
+    return empty_2d_array_uint16
+
 def create_empty_3d_array_uint8( _num_of_images ):
-    empty_3d_array_uint8 = np.empty( ( image_resol, image_resol, _num_of_images ), dtype=np.uint8 )
+    empty_3d_array_uint8   = np.empty( ( image_resol, image_resol, _num_of_images ), dtype=np.uint8 )
     
     return empty_3d_array_uint8
 
@@ -47,9 +61,6 @@ def read_layer_images():
 # End read_layer_images()
 
 def create_reference_image():
-    # median_image_GRAY = create_empty_2d_array_uint8()
-    # median_image_GRAY = np.median( layer_images_GRAY[:,:,:NUM_OF_LAYER_IMAGES_USED_TO_CREATE_REF_IMAGE], axis=2 )
-
     median_image_RGB        = create_empty_3d_array_uint8( 3 )
     lim_of_num_of_layers    = NUM_OF_LAYER_IMAGES_USED_TO_CREATE_REF_IMAGE
     median_image_RGB[:,:,0] = np.median( layer_images_R[:,:,:lim_of_num_of_layers], axis=2 )
@@ -58,28 +69,26 @@ def create_reference_image():
 
     return median_image_RGB
 
-def is_this_pixel_noise( _target_pixel_RGB, _reference_image_RGB ):
-    is_noise_pixel = False
-
-    # # Convert RGB to GRAY
-    # grayscale = 0.299*_target_pixel_RGB[0] + 0.587*_target_pixel_RGB[1] + 0.114*_target_pixel_RGB[2]
-
+def is_this_pixel_non_noise( _target_pixel_RGB, _reference_image_RGB ):
     # In RGB color space, calc the euclidean distance
     r1, r2 = _target_pixel_RGB[0], _reference_image_RGB[0]
     g1, g2 = _target_pixel_RGB[1], _reference_image_RGB[1]
     b1, b2 = _target_pixel_RGB[2], _reference_image_RGB[2]
-    color_distance2 = (r1-r2)**2 + (g1-g2)**2 + (b1-b2)**2
+    color_dist2 = (r1-r2)**2 + (g1-g2)**2 + (b1-b2)**2
+    
+    is_non_noise_pixel = True
+    if color_dist2 >= COLOR_DISTANCE_THRESHOLD_FOR_NOISE**2:
+        is_non_noise_pixel = False
 
-    if color_distance2 >= COLOR_DISTANCE_THRESHOLD_FOR_NOISE**2:
-        is_noise_pixel = True
-
-    return is_noise_pixel
+    return is_non_noise_pixel, color_dist2
 
 def average_layer_images():
     # Pixel-wise layer image averaging
-    target_pixel_RGB           = [0, 0, 0]
+    target_pixel_RGB     = [0, 0, 0]
     is_non_noise_pixels  = np.empty( ( num_of_layers ), bool )
-    num_of_non_noise_pixels_image = create_empty_2d_array_uint8()
+    num_of_non_noise_pixels_image4viz = create_empty_2d_array_uint8()
+    mean_color_dist2_image4viz = create_empty_2d_array_uint16()
+    color_dist2s = np.empty( ( num_of_layers ), np.uint16 )
     layer_averaged_image = create_empty_3d_array_uint8( 3 )
     print( "")
     print( "** Now creating the layer-averaged image..." )
@@ -94,34 +103,41 @@ def average_layer_images():
                 target_pixel_RGB[2] = layer_images_B[y,x,layer]
 
                 # Check if the pixel is noise pixel
-                if is_this_pixel_noise( target_pixel_RGB, reference_image_RGB[y,x,:] ) == False:
-                    is_non_noise_pixels[layer] = True
+                is_non_noise_pixel, color_dist2 = is_this_pixel_non_noise( target_pixel_RGB, reference_image_RGB[y,x,:] )
+                if is_non_noise_pixel == True:
+                    is_non_noise_pixels[layer] = True   # non-noise pixel
                 else:
-                    is_non_noise_pixels[layer] = False
+                    is_non_noise_pixels[layer] = False  # noise pixel
                 # end if
+
+                # Save the color distance
+                color_dist2s[layer] = color_dist2
             # end for layer
 
-            # Get only non-noise pixels
-            R_pixel_values = layer_images_R[y,x,is_non_noise_pixels]
-            G_pixel_values = layer_images_G[y,x,is_non_noise_pixels]
-            B_pixel_values = layer_images_B[y,x,is_non_noise_pixels]
+            # Calc the mean of color distance
+            mean_color_dist2_image4viz[y,x] = round( np.sum( color_dist2s ) / num_of_layers )
+
+            # Exclude noise pixels and get only non-noise pixels
+            R_non_noise_pixels = layer_images_R[y,x,is_non_noise_pixels]
+            G_non_noise_pixels = layer_images_G[y,x,is_non_noise_pixels]
+            B_non_noise_pixels = layer_images_B[y,x,is_non_noise_pixels]
 
             # If all the pixels are background color
-            num_of_bg_color_R = R_pixel_values.size - np.count_nonzero( R_pixel_values )
-            num_of_bg_color_G = G_pixel_values.size - np.count_nonzero( G_pixel_values )
-            num_of_bg_color_B = B_pixel_values.size - np.count_nonzero( B_pixel_values )
-            if num_of_bg_color_R == num_of_bg_color_G == num_of_bg_color_B == num_of_layers:
-                num_of_non_noise_pixels_image[y,x] = num_of_layers
+            num_of_pixels_R_zero = R_non_noise_pixels.size - np.count_nonzero( R_non_noise_pixels )
+            num_of_pixels_G_zero = G_non_noise_pixels.size - np.count_nonzero( G_non_noise_pixels )
+            num_of_pixels_B_zero = B_non_noise_pixels.size - np.count_nonzero( B_non_noise_pixels )
+            if num_of_pixels_R_zero == num_of_pixels_G_zero == num_of_pixels_B_zero == num_of_layers:
+                num_of_non_noise_pixels_image4viz[y,x] = num_of_layers
                 layer_averaged_image[y,x,:] = 0
-                continue
+                continue # for speeding up
 
             # Average the pixel values
             num_of_non_noise_pixels = np.count_nonzero( is_non_noise_pixels )
-            num_of_non_noise_pixels_image[y,x] = num_of_non_noise_pixels
+            num_of_non_noise_pixels_image4viz[y,x] = num_of_non_noise_pixels
             if num_of_non_noise_pixels != 0:
-                R_avg_pixel_value = round( np.sum( R_pixel_values ) / R_pixel_values.size )
-                G_avg_pixel_value = round( np.sum( G_pixel_values ) / G_pixel_values.size )
-                B_avg_pixel_value = round( np.sum( B_pixel_values ) / B_pixel_values.size )
+                R_avg_pixel_value = round( np.sum( R_non_noise_pixels ) / R_non_noise_pixels.size )
+                G_avg_pixel_value = round( np.sum( G_non_noise_pixels ) / G_non_noise_pixels.size )
+                B_avg_pixel_value = round( np.sum( B_non_noise_pixels ) / B_non_noise_pixels.size )
             else:
                 R_avg_pixel_value, G_avg_pixel_value, B_avg_pixel_value = 0, 0, 0
 
@@ -134,18 +150,46 @@ def average_layer_images():
     # end for y
     print ("** Done! ( {} [sec] )\n".format( round(time.time() - start , 2) ) )
 
-    # Save the image
-    # cv2.imwrite( layer_images_path + "Num_of_Non_Noise_Pixels_Image.png", num_of_non_noise_pixels_image )
-    plt.figure( figsize=(10, 10) )
-    plt.title( "The pixel-wise number of pixels used for averaging", fontsize=18 )
-    plt.imshow( num_of_non_noise_pixels_image, clim=[0, num_of_layers], cmap='viridis' )
-    plt.colorbar()
-    # plt.xticks([]), plt.yticks([])
-    plt.savefig( layer_images_path + "Num_of_Non_Noise_Pixels_Image.png" )
-
     # Save the layer averaged image
     layer_averaged_image_BGR = cv2.cvtColor( layer_averaged_image, cv2.COLOR_RGB2BGR )
-    cv2.imwrite( layer_images_path + "Layer_Averaged_Image_" + str( num_of_layers ) + ".png", layer_averaged_image_BGR )
+    output_image_name = layer_images_path + "adaptive_layer_averaged_image_" + str( num_of_layers ) + ".png"
+    cv2.imwrite( output_image_name, layer_averaged_image_BGR )
+    print( "** Saved the adaptive layer averaged image." )
+    print( "**  PATH: {}\n".format( output_image_name ) )
+
+    # Save the figures for visualization
+    create_and_save_figures( num_of_non_noise_pixels_image4viz, mean_color_dist2_image4viz )
+# End of average_layer_images()
+
+def create_and_save_figures( _image4viz1, _image4viz2 ):
+    fig = plt.figure( figsize=(12, 5) ) # figsize=(width, height)
+    gs  = gridspec.GridSpec(1, 2)
+
+    from mpl_toolkits.axes_grid1 import make_axes_locatable
+    ax1 = fig.add_subplot( gs[0, 0] )
+    ax1.set_title( "The num. of pixels used for averaging", fontsize=14 )
+    img1 = ax1.imshow( _image4viz1, clim=[0, num_of_layers], cmap='viridis' )
+    ax1.axis( "image" ), ax1.axis( 'off' )
+    divider = make_axes_locatable( ax1 )
+    ax1_cb = divider.new_horizontal( size="4.5%", pad=0.2 )
+    fig.add_axes( ax1_cb )
+    plt.colorbar( img1, cax=ax1_cb )
+
+    _image4viz2 = np.sqrt( _image4viz2 )
+    ax2 = fig.add_subplot( gs[0, 1] )
+    ax2.set_title( 'Mean color distance', fontsize=14 )
+    img2 = ax2.imshow( _image4viz2, clim=[0, np.max( _image4viz2 )], cmap='viridis' )
+    ax2.axis( "image" ), ax2.axis( 'off' )
+    divider = make_axes_locatable( ax2 )
+    ax2_cb = divider.new_horizontal( size="4.5%", pad=0.2 )
+    fig.add_axes( ax2_cb )
+    plt.colorbar( img2, cax=ax2_cb )
+
+    # Save the figure
+    plt.savefig( layer_images_path + "figure.png" )
+    print( "** Saved the figure." )
+    print( "**  PATH: {}\n".format( layer_images_path + "figure.png" ) )
+
 
 if __name__ == "__main__":
     # Set the number of layer images
@@ -166,7 +210,7 @@ if __name__ == "__main__":
     read_layer_images()
 
     # Create the reference image
-    NUM_OF_LAYER_IMAGES_USED_TO_CREATE_REF_IMAGE = min( 10, num_of_layers )
+    NUM_OF_LAYER_IMAGES_USED_TO_CREATE_REF_IMAGE = min( 20, num_of_layers )
     print( "" )
     print( "** The number of layer images used to create the reference image:" )
     print( "**  NUM_OF_LAYER_IMAGES_USED_TO_CREATE_REF_IMAGE = {}".format( NUM_OF_LAYER_IMAGES_USED_TO_CREATE_REF_IMAGE ) )
@@ -175,7 +219,7 @@ if __name__ == "__main__":
     cv2.imwrite( layer_images_path + "Reference_Image_" + str( NUM_OF_LAYER_IMAGES_USED_TO_CREATE_REF_IMAGE ) + ".png", reference_image_BGR )
 
     # Average the layer images
-    COLOR_DISTANCE_THRESHOLD_FOR_NOISE = 50
+    COLOR_DISTANCE_THRESHOLD_FOR_NOISE = 80
     print( "" )
     print( "** The value of the threshold for determining noise pixels:" )
     print( "**  COLOR_DISTANCE_THRESHOLD_FOR_NOISE = {}".format( COLOR_DISTANCE_THRESHOLD_FOR_NOISE ) )
