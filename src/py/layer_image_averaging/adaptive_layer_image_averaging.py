@@ -158,30 +158,28 @@ def average_layer_images():
     print( "**  PATH: {}\n".format( output_image_name ) )
 
     # Save the figures for visualization
-    create_and_save_figures( num_of_non_noise_pixels_image4viz, mean_color_dist2_image4viz )
+    save_figure_for_viz( num_of_non_noise_pixels_image4viz, mean_color_dist2_image4viz )
 # End of average_layer_images()
 
-def create_and_save_figures( _image4viz1, _image4viz2 ):
+def save_figure_for_viz( _image4viz1, _image4viz2 ):
     fig = plt.figure( figsize=(12, 5) ) # figsize=(width, height)
     gs  = gridspec.GridSpec(1, 2)
 
     from mpl_toolkits.axes_grid1 import make_axes_locatable
     ax1 = fig.add_subplot( gs[0, 0] )
-    ax1.set_title( "The num. of pixels used for averaging", fontsize=14 )
+    ax1.set_title( "Num. of pixels used for averaging (pixel-wise)", fontsize=12 )
     img1 = ax1.imshow( _image4viz1, clim=[0, num_of_layers], cmap='viridis' )
     ax1.axis( "image" ), ax1.axis( 'off' )
-    divider = make_axes_locatable( ax1 )
-    ax1_cb = divider.new_horizontal( size="4.5%", pad=0.2 )
+    ax1_cb = make_axes_locatable( ax1 ).new_horizontal( size="4.5%", pad=0.2 )
     fig.add_axes( ax1_cb )
     plt.colorbar( img1, cax=ax1_cb )
 
     _image4viz2 = np.sqrt( _image4viz2 )
     ax2 = fig.add_subplot( gs[0, 1] )
-    ax2.set_title( 'Mean color distance', fontsize=14 )
+    ax2.set_title( 'Mean color distance (pixel-wise)', fontsize=12 )
     img2 = ax2.imshow( _image4viz2, clim=[0, np.max( _image4viz2 )], cmap='viridis' )
     ax2.axis( "image" ), ax2.axis( 'off' )
-    divider = make_axes_locatable( ax2 )
-    ax2_cb = divider.new_horizontal( size="4.5%", pad=0.2 )
+    ax2_cb = make_axes_locatable( ax2 ).new_horizontal( size="4.5%", pad=0.2 )
     fig.add_axes( ax2_cb )
     plt.colorbar( img2, cax=ax2_cb )
 
@@ -189,7 +187,6 @@ def create_and_save_figures( _image4viz1, _image4viz2 ):
     plt.savefig( layer_images_path + "figure.png" )
     print( "** Saved the figure." )
     print( "**  PATH: {}\n".format( layer_images_path + "figure.png" ) )
-
 
 if __name__ == "__main__":
     # Set the number of layer images
@@ -219,7 +216,7 @@ if __name__ == "__main__":
     cv2.imwrite( layer_images_path + "Reference_Image_" + str( NUM_OF_LAYER_IMAGES_USED_TO_CREATE_REF_IMAGE ) + ".png", reference_image_BGR )
 
     # Average the layer images
-    COLOR_DISTANCE_THRESHOLD_FOR_NOISE = 80
+    COLOR_DISTANCE_THRESHOLD_FOR_NOISE = 100
     print( "" )
     print( "** The value of the threshold for determining noise pixels:" )
     print( "**  COLOR_DISTANCE_THRESHOLD_FOR_NOISE = {}".format( COLOR_DISTANCE_THRESHOLD_FOR_NOISE ) )
