@@ -84,11 +84,11 @@ def is_this_pixel_non_noise( _target_pixel_RGB, _reference_image_RGB ):
 
 def average_layer_images():
     # Pixel-wise layer image averaging
-    target_pixel_RGB     = [0, 0, 0]
-    is_non_noise_pixels  = np.empty( ( num_of_layers ), bool )
+    target_pixel_RGB     = np.empty( 3, int )
+    is_non_noise_pixels  = np.empty( num_of_layers, bool )
     num_of_non_noise_pixels_image4viz = create_empty_2d_array_uint8()
     mean_color_dist2_image4viz = create_empty_2d_array_uint16()
-    color_dist2s = np.empty( ( num_of_layers ), np.uint16 )
+    color_dist2s = np.empty( num_of_layers, int )
     layer_averaged_image = create_empty_3d_array_uint8( 3 )
     print( "")
     print( "** Now creating the layer-averaged image..." )
@@ -115,7 +115,7 @@ def average_layer_images():
             # end for layer
 
             # Calc the mean of color distance
-            mean_color_dist2_image4viz[y,x] = round( np.sum( color_dist2s ) / num_of_layers )
+            mean_color_dist2_image4viz[y,x] = np.mean( color_dist2s )
 
             # Exclude noise pixels and get only non-noise pixels
             R_non_noise_pixels = layer_images_R[y,x,is_non_noise_pixels]
@@ -123,32 +123,39 @@ def average_layer_images():
             B_non_noise_pixels = layer_images_B[y,x,is_non_noise_pixels]
 
             # If all the pixels are background color
-            num_of_pixels_R_zero = R_non_noise_pixels.size - np.count_nonzero( R_non_noise_pixels )
-            num_of_pixels_G_zero = G_non_noise_pixels.size - np.count_nonzero( G_non_noise_pixels )
-            num_of_pixels_B_zero = B_non_noise_pixels.size - np.count_nonzero( B_non_noise_pixels )
-            if num_of_pixels_R_zero == num_of_pixels_G_zero == num_of_pixels_B_zero == num_of_layers:
+            num_of_R_zero = R_non_noise_pixels.size - np.count_nonzero( R_non_noise_pixels )
+            num_of_G_zero = G_non_noise_pixels.size - np.count_nonzero( G_non_noise_pixels )
+            num_of_B_zero = B_non_noise_pixels.size - np.count_nonzero( B_non_noise_pixels )
+            if num_of_R_zero == num_of_G_zero == num_of_B_zero == num_of_layers:
                 num_of_non_noise_pixels_image4viz[y,x] = num_of_layers
                 layer_averaged_image[y,x,:] = 0
                 continue # for speeding up
 
-            # Average the pixel values
+            # Weighted averaging for only non-noise pixels
             num_of_non_noise_pixels = np.count_nonzero( is_non_noise_pixels )
             num_of_non_noise_pixels_image4viz[y,x] = num_of_non_noise_pixels
-            if num_of_non_noise_pixels != 0:
-                R_avg_pixel_value = round( np.sum( R_non_noise_pixels ) / R_non_noise_pixels.size )
-                G_avg_pixel_value = round( np.sum( G_non_noise_pixels ) / G_non_noise_pixels.size )
-                B_avg_pixel_value = round( np.sum( B_non_noise_pixels ) / B_non_noise_pixels.size )
-            else:
-                R_avg_pixel_value, G_avg_pixel_value, B_avg_pixel_value = 0, 0, 0
+            sum_of_weights = 0
+            sum_R, sum_G, sum_B = 0, 0, 0
+            for i in range( num_of_non_noise_pixels ):
+                weight = num_of_non_noise_pixels - i
+                sum_of_weights += weight
+
+                sum_R += R_non_noise_pixels[i] * weight
+                sum_G += G_non_noise_pixels[i] * weight
+                sum_B += B_non_noise_pixels[i] * weight
+            # end for
 
             # Create output image
-            layer_averaged_image[y,x,0] = R_avg_pixel_value
-            layer_averaged_image[y,x,1] = G_avg_pixel_value
-            layer_averaged_image[y,x,2] = B_avg_pixel_value
+            if not sum_of_weights == 0:
+                layer_averaged_image[y,x,0] = sum_R / sum_of_weights
+                layer_averaged_image[y,x,1] = sum_G / sum_of_weights
+                layer_averaged_image[y,x,2] = sum_B / sum_of_weights
+            else:
+                layer_averaged_image[y,x,:] = 0
 
         # end for x
     # end for y
-    print ("** Done! ( {} [sec] )\n".format( round(time.time() - start , 2) ) )
+    print ("**  Done! ( {} [sec] )\n".format( round( time.time() - start , 2 ) ) )
 
     # Save the layer averaged image
     layer_averaged_image_BGR = cv2.cvtColor( layer_averaged_image, cv2.COLOR_RGB2BGR )
@@ -207,7 +214,7 @@ if __name__ == "__main__":
     read_layer_images()
 
     # Create the reference image
-    NUM_OF_LAYER_IMAGES_USED_TO_CREATE_REF_IMAGE = min( 5, num_of_layers )
+    NUM_OF_LAYER_IMAGES_USED_TO_CREATE_REF_IMAGE = min( 15, num_of_layers )
     print( "" )
     print( "** The number of layer images used to create the reference image:" )
     print( "**  NUM_OF_LAYER_IMAGES_USED_TO_CREATE_REF_IMAGE = {}".format( NUM_OF_LAYER_IMAGES_USED_TO_CREATE_REF_IMAGE ) )

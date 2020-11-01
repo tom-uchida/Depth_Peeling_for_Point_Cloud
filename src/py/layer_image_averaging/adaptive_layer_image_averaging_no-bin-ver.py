@@ -83,7 +83,7 @@ def calc_color_dist2( _target_pixel_RGB, _reference_pixel_RGB ):
 def average_layer_images():
     # Pixel-wise layer image averaging
     target_pixel_values = np.zeros( ( num_of_layers, 3 ), dtype=np.uint8 )
-    is_non_noise_pixels = np.empty( ( num_of_layers ), bool )
+    is_non_noise_pixels = np.empty( num_of_layers, bool )
     # num_of_non_noise_pixels_image4viz = create_empty_2d_array_uint8()
     # mean_color_dist_image4viz = create_empty_2d_array_uint16()
     color_dist2s = np.zeros( num_of_layers )
