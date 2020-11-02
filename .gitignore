@@ -20,3 +20,5 @@ src/opbr_dp
 
 src/DOC/OpenGL/kvs/
 src/py/projected_pixels/csv/
+
+src/py/layer_image_averaging/*.png
