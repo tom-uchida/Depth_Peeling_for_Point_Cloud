@@ -1,6 +1,6 @@
-# noise_robust_layer_image_averaging.py
+# adaptive_layer_image_averaging.py
 #   Tomomasa Uchida
-#   2020/10/25
+#   2020/11/01
 
 import numpy as np
 import cv2
@@ -25,24 +25,16 @@ if len(args) != 4:
     sys.exit()
 
 def create_empty_2d_array_uint8():
-    empty_2d_array_uint8   = np.empty( ( image_resol, image_resol ), dtype=np.uint8 )
-
-    return empty_2d_array_uint8
+    return np.empty( ( image_resol, image_resol ), dtype=np.uint8 )
 
 def create_empty_2d_array_uint16():
-    empty_2d_array_uint16  = np.empty( ( image_resol, image_resol ), dtype=np.uint16 )
-
-    return empty_2d_array_uint16
+    return np.empty( ( image_resol, image_resol ), dtype=np.uint16 )
 
 def create_empty_3d_array_uint8( _num_of_images ):
-    empty_3d_array_uint8   = np.empty( ( image_resol, image_resol, _num_of_images ), dtype=np.uint8 )
-    
-    return empty_3d_array_uint8
+    return np.empty( ( image_resol, image_resol, _num_of_images ), dtype=np.uint8 )
 
 def create_empty_3d_array_float32( _num_of_images ):
-    empty_3d_array_float32 = np.empty( ( image_resol, image_resol, _num_of_images ), dtype=np.float32 )
-    
-    return empty_3d_array_float32
+    return np.empty( ( image_resol, image_resol, _num_of_images ), dtype=np.float32 )
 
 def read_layer_images():
     # Read the layer images
@@ -58,7 +50,6 @@ def read_layer_images():
         layer_images_B[:,:,layer]    = tmp_image_RGB[:,:,2] # B
         layer_images_GRAY[:,:,layer] = tmp_image_GRAY       # GRAY
     # end for layer
-# End read_layer_images()
 
 def create_reference_image():
     median_image_RGB        = create_empty_3d_array_uint8( 3 )

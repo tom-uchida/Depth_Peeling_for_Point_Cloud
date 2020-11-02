@@ -1,4 +1,4 @@
-# layer_image_averaging.py
+# simple_layer_image_averaging.py
 #   Tomomasa Uchida
 #   2020/08/29
 
