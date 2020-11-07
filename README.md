@@ -1,6 +1,6 @@
-# SPBR_Depth_Peeling
+# Depth_Peeling_for_Point_Cloud
 
-## Peeling Process
+## Visualization of peeling process
 ### Noise Point Clouds
 |Gaussian noise (10%)|Outlier noise (10%)|
 |:-:|:-:|
