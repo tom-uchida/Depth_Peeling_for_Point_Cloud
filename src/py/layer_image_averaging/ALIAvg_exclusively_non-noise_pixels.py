@@ -205,7 +205,7 @@ if __name__ == "__main__":
     read_layer_images()
 
     # Create the reference image
-    NUM_OF_LAYER_IMAGES_USED_TO_CREATE_REF_IMAGE = min( 15, num_of_layers )
+    NUM_OF_LAYER_IMAGES_USED_TO_CREATE_REF_IMAGE = min( 5, num_of_layers )
     print( "" )
     print( "** The number of layer images used to create the reference image:" )
     print( "**  NUM_OF_LAYER_IMAGES_USED_TO_CREATE_REF_IMAGE = {}".format( NUM_OF_LAYER_IMAGES_USED_TO_CREATE_REF_IMAGE ) )
