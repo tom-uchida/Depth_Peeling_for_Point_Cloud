@@ -82,7 +82,7 @@ def average_layer_images():
     color_dist2s = np.empty( num_of_layers, int )
     layer_averaged_image = create_empty_3d_array_uint8( 3 )
     print( "")
-    print( "** Now creating the layer-averaged image..." )
+    print( "** Now creating the averaged image..." )
     start = time.time()
     for y in range( image_resol ):
         for x in range( image_resol ):
@@ -156,7 +156,7 @@ def average_layer_images():
     print( "**  PATH: {}\n".format( output_image_name ) )
 
     # Save the figures for visualization
-    save_figure_for_viz( num_of_non_noise_pixels_image4viz, mean_color_dist2_image4viz )
+    # save_figure_for_viz( num_of_non_noise_pixels_image4viz, mean_color_dist2_image4viz )
 # End of average_layer_images()
 
 def save_figure_for_viz( _image4viz1, _image4viz2 ):
