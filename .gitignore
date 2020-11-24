@@ -4,7 +4,6 @@
 src/CONVERT2BINARY/
 src/PLY_DATA/
 src/PLY_SUPPORT/
-src/SPBR_DATA/
 src/IMAGE_DATA/
 
 src/*.sh
@@ -22,3 +21,10 @@ src/DOC/OpenGL/kvs/
 src/py/projected_pixels/csv/
 
 src/py/layer_image_averaging/*.png
+
+src/SPBR_DATA/DepthBox_1M/
+src/SPBR_DATA/DepthBox_10M/
+src/SPBR_DATA/DepthBoxGenerator/*.kvs
+src/SPBR_DATA/DepthBoxGenerator/*.o
+src/SPBR_DATA/DepthBoxGenerator/DepthBoxGenerator
+src/SPBR_DATA/*.spbr
