@@ -1,5 +1,3 @@
-// 平面の点群を人工的に生成するプログラム
-
 #include <iostream>
 #include <kvs/MersenneTwister>
 #include <kvs/Vector3>
@@ -9,9 +7,9 @@
 #include <kvs/ColorMap>
 #include <kvs/RGBColor>
 
-const int npoints = 10000000;
-#define  TRUTH_MAX    0.99
-#define  TRUTH_MIN    0.01
+const int num_of_points = 1e7;
+const float TRUTH_MAX   = 0.99;
+const float TRUTH_MIN   = 0.01;
 
 const char OUTPUT_SPBR[] = "depth-box.spbr";
 
@@ -46,10 +44,10 @@ int main() {
 
     // Generate points
     kvs::MersenneTwister  uniRand;
-    kvs::BoxMuller        normRand;
+    // kvs::BoxMuller        normRand;
     kvs::RGBColor color;
     float x, y, z;
-    for ( int i = 0; i < npoints; i++ ) {
+    for ( int i = 0; i < num_of_points; i++ ) {
         // Generate random 3D point in the BB
         x = BB_x*uniRand() + BB_min.x(); // x coord is a random number [BB_min.x, BB_min.x]
         y = BB_y*uniRand() + BB_min.y(); // y coord is a random number [BB_min.y, BB_min.y]
@@ -59,14 +57,7 @@ int main() {
         fout << x << " " << y << " " << z << " ";
         fout << 0 << " " << 0 << " " << 0 << " ";
         fout << +color.r() << " " << +color.g() << " " << +color.b() << std::endl;
-        // fout << 255 << " " << 255 << " " << 255 << std::endl;
-
-        // if ( i < 10 ) {
-        //     std::cout << "R: " << color.r() << std::endl;
-        //     std::cout << "G: " << color.g() << std::endl;
-        //     std::cout << "B: " << color.b() << std::endl;
-        // }
-    }
+    } // end for
 
     // FILE close
     fout.close();
