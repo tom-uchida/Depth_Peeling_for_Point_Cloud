@@ -7,11 +7,11 @@
 
 
 //----- TITLE of SPBR and OPBR 
-const char SPBR_APP_TITLE    [] = "===== Stochastic Point-based Renderer (SPBR) =====";
+const char SPBR_APP_TITLE    [] = "===== Depth Peeling for Point Cloud =====";
 const char OPBR_APP_TITLE    [] = "===== Opaque Point-based Renderer (OPBR) =====";
 
 //----- VERSION of SPBR and OPBR
-const char SOPBR_VERSION [] = "Depth Peeling Version";
+const char SOPBR_VERSION [] = "";
 
 //----- DATE
 const char DATE          [] = "2020/09/02";

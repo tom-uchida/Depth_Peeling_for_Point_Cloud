@@ -16,6 +16,7 @@ src/*.org
 
 src/spbr_dp
 src/opbr_dp
+src/depth_peeling_for_point_cloud
 
 src/DOC/OpenGL/kvs/
 src/py/projected_pixels/csv/

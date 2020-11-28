@@ -105,7 +105,7 @@ public:
     {
         const kvs::ColorImage snapshot_image = scene()->camera()->snapshot();
 
-        std::string file_name( "IMAGE_DATA/LAYER_IMAGES/LayerImage" );
+        std::string file_name( "IMAGE_DATA/OUTPUT_LAYER_IMAGES/LayerImage" );
         // char three_digits_num[5];
         // sprintf( three_digits_num, "%03d", static_cast<int>( _current_layer_level ) );
         // file_name += three_digits_num;
