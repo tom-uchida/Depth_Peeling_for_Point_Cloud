@@ -85,7 +85,7 @@ public:
         std::cout << "Done! ( " << static_cast<double>( end - start ) / CLOCKS_PER_SEC << " [sec] )\n";
 
         std::cout << "\nAutomatically, snapshotted.\n";
-        std::cout << "Saved image path: IMAGE_DATA/LAYER_IMAGES/LayerImageX.bmp\n";
+        std::cout << "Saved image path: IMAGE_DATA/OUTPUT_LAYER_IMAGES/LayerImageX.bmp\n";
 
         exit( 0 ); // Terminate the program normally
     } // end of paintEvent()
