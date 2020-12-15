@@ -38,14 +38,19 @@ print( "The sum of projected pixels: {} (pixels)".format( nPixels_sum ) )
 
 
 # Creat figure
-plt.scatter( Layer, nPixels, color='black', marker="o" )
-plt.ylabel( 'The number of projected pixels', fontsize=16 )
 
-# plt.scatter( Layer, nPixels_cum, color='black', marker="o" )
-# plt.ylabel( 'The cumulative number of projected pixels', fontsize=16 )
+# plt.scatter( Layer, nPixels, color='black', marker="o" )
+# plt.ylabel( 'Number of projected pixels', fontsize=20 )
 
-plt.xlabel( 'Layer', fontsize=16 )
-plt.xticks( [1, 20, 40, 60, 80], fontsize=14 )
+plt.scatter( Layer, nPixels_cum, color='black', marker="o" )
+plt.ylabel( 'The cumulative number of projected pixels', fontsize=20 )
+
+plt.xlabel( 'Layer', fontsize=20 )
+plt.xticks( [1, 20, 40, 60, 80], fontsize=18 )
+plt.yticks( fontsize=18 )
+
+ax = plt.gca()
+ax.ticklabel_format( style="sci",  axis="y",scilimits=(0,0) )
 
 # plt.grid()
 plt.show()
