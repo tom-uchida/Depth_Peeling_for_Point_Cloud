@@ -61,7 +61,7 @@ public:
 
         // Do "Depth Peeling"
         const clock_t start = clock();
-        std::cout << "\nDoing Depth Peeling " << layer_level << " times...\n";
+        std::cout << "\nExecuting Depth Peeling \"" << layer_level << "\" times...\n";
         for ( size_t i = 0; i < layer_level; i++ ) 
         {
             const size_t current_layer_level = i + 1;
