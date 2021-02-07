@@ -22,28 +22,40 @@
 
 ## Usage
 ```
-$ cd SPBR_Depth_Peeling/src
+$ sh config_dp.sh
+$ make
+$ make install
+
+$ make test_ply_ascii
+$ make test_ply_binary
+$ make test_spbr_ascii
+$ make test_spbr_binary
+```
+
+
+### Example
+```
 $ cat .param.spbr
-#/LayerLevel 10
+#/LayerLevel 20
 
-$ ./spbr_dp input.ply
+$ ./dp input.ply
 
-===== Stochastic Point-based Renderer (SPBR) =====
-               Depth Peeling Version
+===== Depth Peeling for Point Cloud =====
 
-                2020/09/02 (Depth Peeling Version)
+                2021/02/07
               Tomomasa Uchida
            Ritsumeikan University
 
- USAGE : spbr file1.spbr file2.spbr ...
- HELP  : spbr -h
+ USAGE : dp file1.spbr file2.spbr ...
+ HELP  : dp -h
 
 ~~~
 
-Doing Depth Peeling 10 times...
+Executing Depth Peeling "20" times...
+Done! ( 0.3871 [sec] )
 
 Automatically, snapshotted.
-Saved image path: IMAGE_DATA/LAYER_IMAGES/LayerImageXXX.bmp
+Saved image path: IMAGE_DATA/OUTPUT_LAYER_IMAGES/LayerImageX.bmp
 ```
 
 <!-- ## Visualization Results

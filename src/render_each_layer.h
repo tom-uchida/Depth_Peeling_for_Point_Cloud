@@ -71,24 +71,24 @@ public:
 
 #ifdef DRAW_LABEL
             // Draw label
-            drawLabel( current_layer_level );
+            this->drawLabel( current_layer_level );
 #endif
 
             // Rendering
             kvs::glut::Screen::paintEvent();
 
             // Save the current layer image
-            saveImage( current_layer_level );
-        }
+            this->saveImage( current_layer_level );
+        } // end for
 
         const clock_t end = clock();
         std::cout << "Done! ( " << static_cast<double>( end - start ) / CLOCKS_PER_SEC << " [sec] )\n";
 
-        std::cout << "\nAutomatically, snapshotted.\n";
-        std::cout << "Saved image path: IMAGE_DATA/OUTPUT_LAYER_IMAGES/LayerImageX.bmp\n";
+        std::cout << "\nLayer images were saved automatically.\n";
+        std::cout << " PATH: IMAGE_DATA/OUTPUT_LAYER_IMAGES/LayerImageX.bmp\n";
 
         exit( 0 ); // Terminate the program normally
-    } // end of paintEvent()
+    } // End of paintEvent()
 
     inline void drawLabel( const size_t _current_layer_level )
     {
@@ -99,7 +99,7 @@ public:
         m_label.setFont( m_font );
         // m_label.setMargin( 10 );
         m_label.show();
-    } // end of drawLabel()
+    } // End of drawLabel()
 
     inline void saveImage( const size_t _current_layer_level )
     {
@@ -115,8 +115,8 @@ public:
         file_name += ".bmp";
 
         snapshot_image.write( file_name );
-    } // end of saveImage()
+    } // End of saveImage()
 
-}; // end of Screen class
+}; // End of Screen class
 
-} // end of namespace local
+} // End of namespace local

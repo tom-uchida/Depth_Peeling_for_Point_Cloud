@@ -1,4 +1,11 @@
+/*****************************************************************************/
+/**
+ *  @file   depth_peeling_renderer.h
+ *  @author Tomomasa Uchida
+ */
+/*****************************************************************************/
 #pragma once
+
 #include <kvs/Module>
 #include <kvs/ProgramObject>
 #include <kvs/VertexBufferObject>

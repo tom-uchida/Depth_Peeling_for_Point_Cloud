@@ -1,4 +1,11 @@
+/*****************************************************************************/
+/**
+ *  @file   depth_peeling_renderer.cpp
+ *  @author Tomomasa Uchida
+ */
+/*****************************************************************************/
 #include "depth_peeling_renderer.h"
+
 #include <kvs/OpenGL>
 #include <kvs/ShaderSource>
 #include <kvs/VertexShader>
@@ -134,7 +141,7 @@ void DepthPeelingRenderer::exec( kvs::ObjectBase* _object, kvs::Camera* _camera,
         this->create_vbo( point_object );
     }
 
-    // Peeling Processing 
+    // Exec. peeling processing 
     this->initialize_pass();
     for ( size_t i = 0; i < m_layer_level; i++ )
     {
@@ -209,10 +216,10 @@ void DepthPeelingRenderer::create_vbo( const kvs::PointObject* _point_object )
     kvs::ValueArray<kvs::UInt8>  colors  = ::VertexColors( _point_object );
     kvs::ValueArray<kvs::Real32> normals = ::VertexNormals( _point_object );
 
-    const size_t coord_size = coords.byteSize();
-    const size_t color_size = colors.byteSize();
+    const size_t coord_size  = coords.byteSize();
+    const size_t color_size  = colors.byteSize();
     const size_t normal_size = normals.byteSize();
-    const size_t byte_size = coord_size + color_size + normal_size;
+    const size_t byte_size   = coord_size + color_size + normal_size;
 
     m_vbo.create( byte_size );
     m_vbo.bind();
@@ -306,8 +313,8 @@ void DepthPeelingRenderer::initialize_pass()
 
 void DepthPeelingRenderer::finalize_pass()
 {
-    kvs::Texture::Binder tex0( m_color_buffer[ 2 ], 0 );
-    // kvs::Texture::Binder tex0( m_depth_buffer[ 2 ], 0 );
+    kvs::Texture::Binder tex0( m_color_buffer[2], 0 );
+    // kvs::Texture::Binder tex0( m_depth_buffer[2], 0 );
     kvs::ProgramObject::Binder shader( m_finalizing_shader );
 
     kvs::OpenGL::Disable( GL_DEPTH_TEST );
@@ -344,10 +351,10 @@ void DepthPeelingRenderer::peel_pass( const kvs::PointObject* _point_object )
 
         // Assign texture to the fbo
         kvs::Texture::Binder tex11( m_color_buffer[front], 11 );
-        kvs::Texture::Binder tex12( m_depth_buffer[back], 12 );
-        kvs::Texture::Binder tex13( m_color_buffer[back], 13 );
+        kvs::Texture::Binder tex12( m_depth_buffer[back],  12 );
+        kvs::Texture::Binder tex13( m_color_buffer[back],  13 );
 
-        // Rendering to the fbo (Offscreen Rendering)
+        // Rendering to the fbo ( Offscreen Rendering? )
         this->blend();
     }
 
@@ -360,14 +367,14 @@ void DepthPeelingRenderer::draw( const kvs::PointObject* _point_object )
 
     kvs::OpenGL::Enable( GL_DEPTH_TEST );
 
-    const kvs::Mat4 M = kvs::OpenGL::ModelViewMatrix();
+    const kvs::Mat4  M = kvs::OpenGL::ModelViewMatrix();
     const kvs::Mat4 PM = kvs::OpenGL::ProjectionMatrix() * M;
-    const kvs::Mat3 N = kvs::Mat3( M[0].xyz(), M[1].xyz(), M[2].xyz() );
+    const kvs::Mat3  N = kvs::Mat3( M[0].xyz(), M[1].xyz(), M[2].xyz() );
     m_peeling_shader.setUniform( "ModelViewMatrix", M );
     m_peeling_shader.setUniform( "ModelViewProjectionMatrix", PM );
     m_peeling_shader.setUniform( "NormalMatrix", N );
 
-    const size_t npoints = _point_object->numberOfVertices();
+    const size_t npoints    = _point_object->numberOfVertices();
     const size_t coord_size = npoints * 3 * sizeof( kvs::Real32 );
     // const size_t color_size = npoints * 4 * sizeof( kvs::UInt8 );
 
