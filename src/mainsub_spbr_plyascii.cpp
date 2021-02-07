@@ -41,11 +41,7 @@
 #include "depth_peeling_renderer.h" // UCHIDA 200902
 #include <kvs/Screen> // UCHIDA 200908
 #include "render_each_layer.h" // UCHIDA 200919
-#include <kvs/Label> // UCHIDA 2020/10/09
-#include <kvs/Font> // UCHIDA 2020/10/09
-#include <kvs/FontMetrics> // UCHIDA 2020/10/09
 
-// #define AUTO_SNAP_MODE
 //#define DEBUG_MAIN
 
 //-----
@@ -187,25 +183,12 @@ int mainsub_spbr_plyascii ( int argc, char** argv )
     screen.addEvent( &init );
     screen.addEvent( &key );
 
-#if defined AUTO_SNAP_MODE
-    // Add timer event for AUTO_SNAP_MODE
-    const int msec = 1000;
-    TimerEvent timer_event( msec,
-                            std::to_string( spbr_engine->layerLevel() ), 
-                            screen.scene() );
-    screen.addEvent( &timer_event );
-#endif
-
     // Display menu in console 
     std::cout << "** Executing Depth Peeling Rendering..." << std::endl;
     key.displayMenu();
 
     // Create and show the window
     screen.show();
-
-    // Draw FPS count inside the view window
-    //  Revise and moved here to use kvs::Label
-    // drawFPS ( spbr_engine, &screen );//draw FPSLabel
 
     // Start
     return( app.run() );

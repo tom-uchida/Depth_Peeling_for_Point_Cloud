@@ -41,47 +41,6 @@
 
 const kvs::Vector3f DEFAULT_LIGHT_POSITION (12.0, 12.0, 12.0) ;
 
-// UCHIDA 2020/09/08
-#include <kvs/TimerEventListener>
-// #include <kvs/glut/Timer>
-
-//------------------------------------------------------------//
-class TimerEvent : public kvs::TimerEventListener {
-//------------------------------------------------------------//
-public:
-    std::string			  m_filename;
-    std::string			  m_layer_level;
-    kvs::Scene* 		  m_scene;
-
-public:
-    // Constructor
-    TimerEvent( int msec, std::string layer_level, kvs::Scene* scene ):
-        kvs::TimerEventListener( msec ),
-        m_layer_level( layer_level ),
-        m_scene( scene )
-    {
-        // Get filename for snapshots
-        SingleInputFile* m_sif = SingleInputFile::GetInstance();
-        char m_filename_tmp[256];
-        m_sif->GetNameBody( m_filename_tmp );
-        m_filename = m_filename_tmp;
-    }
-
-    void update( kvs::TimeEvent* event ) {
-        kvs::ColorImage snapshot_image;
-        snapshot_image = m_scene->camera()->snapshot();
-        m_filename += "_";
-        m_filename += m_layer_level;
-        m_filename += ".bmp";
-        snapshot_image.write(m_filename);
-
-        std::cout << "\nAutomatically, snapshotted." << std::endl;
-        std::cout << "Saved image path: " << m_filename << std::endl;
-        exit(0);
-    } // End update()
-
-}; // End TimerEvent class
-
 //------------------------------------------------------------//
 class InitializeEvent : public kvs::InitializeEventListener {
 //------------------------------------------------------------//

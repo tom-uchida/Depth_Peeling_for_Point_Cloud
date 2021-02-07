@@ -13,10 +13,7 @@ src/Makefile
 src/*.txt
 src/*.spbr
 src/*.org
-
-src/spbr_dp
-src/opbr_dp
-src/depth_peeling_for_point_cloud
+src/dp
 
 src/DOC/OpenGL/kvs/
 src/py/projected_pixels/csv/

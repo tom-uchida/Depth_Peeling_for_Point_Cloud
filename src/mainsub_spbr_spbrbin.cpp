@@ -128,7 +128,7 @@ int mainsub_spbr_spbrbin ( int argc, char** argv )
     // Create a screen and register 
     //  the point object and the renderer 
     //kvs::glut::Screen screen( &app );
-    local::Screen screen( &app );
+    local::Screen screen( &app ); // UCHIDA 2020/09/19
     screen.registerObject( object, renderer );
 
   // Object rotation (Z==>X) if required
@@ -178,15 +178,11 @@ int mainsub_spbr_spbrbin ( int argc, char** argv )
   screen.addEvent( &key );
 
   // Display mene in console 
-  std::cout << "** Executing particle-based rendering..." << std::endl;
+  std::cout << "** Executing Depth Peeling Rendering..." << std::endl;
   key.displayMenu(); 
 
   // Create and show the window
   screen.show();
-
-  // Draw FPS count inside the view window
-  //  Revise and moved here to use kvs::Label
-//   drawFPS ( spbr_engine, &screen );//draw FPSLabel
 
   // Start
   return( app.run() );

@@ -12,7 +12,7 @@ inline void displaySPBR_OpeningMessage ( std::ostream& out = std::cout )
 {
   std::cout << std::endl;
   std::cout << SPBR_APP_TITLE << std::endl;
-  std::cout << "            " << SOPBR_VERSION << std::endl;
+//   std::cout << "            " << SOPBR_VERSION << std::endl;
   std::cout << std::endl;
   std::cout << "                " << DATE << std::endl;
   std::cout << AUTHOR << std::endl;
@@ -22,8 +22,8 @@ inline void displaySPBR_OpeningMessage ( std::ostream& out = std::cout )
 //-----
 inline void displaySPBR_Usage ( std::ostream& out = std::cout )
 {
-    out << " USAGE : spbr file1.spbr file2.spbr ..." << std::endl;
-    out << " HELP  : spbr -h"           << std::endl;
+    out << " USAGE : dp file1.spbr file2.spbr ..." << std::endl;
+    out << " HELP  : dp -h"           << std::endl;
     out << std::endl;
 }
 

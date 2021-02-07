@@ -59,7 +59,7 @@ public:
         // Get the layer level
         const size_t layer_level = dp_renderer->getLayerLevel();
 
-        // Do "Depth Peeling"
+        // Execute "Depth Peeling"
         const clock_t start = clock();
         std::cout << "\nExecuting Depth Peeling \"" << layer_level << "\" times...\n";
         for ( size_t i = 0; i < layer_level; i++ ) 
